@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Melody Detective</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app" aria-labelledby="app-title">
+      <header class="header">
+        <div class="brand-mark" aria-hidden="true">♪</div>
+        <div>
+          <h1 id="app-title">Melody Detective</h1>
+          <p class="subtitle">Train your ear. Find the note.</p>
+        </div>
+      </header>
+
+      <section class="game-card" aria-label="Melody Detective game">
+        <p class="instructions">
+          Press Play Note, listen carefully, then tap the piano key that matches the mystery note.
+        </p>
+
+        <button id="play-note" class="play-button" type="button">Play Note</button>
+
+        <div class="piano-shell">
+          <div id="keyboard" class="keyboard" aria-label="Virtual piano keyboard"></div>
+        </div>
+
+        <p id="feedback" class="feedback" role="status" aria-live="polite">
+          Ready when you are.
+        </p>
+      </section>
+
+      <footer class="footer">
+        If your guess is higher than the mystery note, you'll see "Too High." If it's lower, you'll see "Too Low."
+      </footer>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
