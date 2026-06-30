@@ -1,0 +1,16 @@
+# macOS system files
+.DS_Store
+
+# Editor and operating system folders
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Dependency and build folders, in case the project grows later
+node_modules/
+dist/
+build/

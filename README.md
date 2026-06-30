@@ -16,10 +16,16 @@ No setup is required.
 Open this file in your browser:
 
 ```text
-src/index.html
+index.html
 ```
 
 You can double-click the file, or right-click it and choose your browser.
+
+## Deployment
+
+For GitHub Pages, publish from the repository root.
+
+GitHub Pages looks for an `index.html` file at the published location. This project has one at the root so the shared site URL can load the app directly.
 
 ## Project Structure
 
@@ -45,4 +51,3 @@ This version uses only:
 - The browser Web Audio API
 
 There is no React, no database, no accounts, and no build tools.
-
