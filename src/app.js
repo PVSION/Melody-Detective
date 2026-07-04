@@ -67,7 +67,7 @@ function handleGuess(guessedNoteIndex) {
   playFrequency(notes[guessedNoteIndex].frequency);
 
   if (guessedNoteIndex === mysteryNoteIndex) {
-    showFeedback("Correct", "correct");
+    showFeedback(`Correct - ${notes[mysteryNoteIndex].name}`, "correct");
     mysteryNoteIndex = chooseRandomNoteIndex();
     hasPlayedMysteryNote = false;
     return;
