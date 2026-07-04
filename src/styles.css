@@ -232,15 +232,33 @@ h1 {
   height: 62%;
   border: 0;
   border-radius: 0 0 7px 7px;
+  color: #e8edf7;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent 28%, rgba(255, 255, 255, 0.06) 70%, transparent),
     linear-gradient(180deg, #2a303c 0%, var(--black-key) 48%, var(--black-key-bottom) 100%);
+  font-size: clamp(0.72rem, 1.5vw, 0.9rem);
+  font-weight: 800;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 2px clamp(12px, 1.8vw, 18px);
   box-shadow:
     0 9px 16px rgba(0, 0, 0, 0.55),
     inset 0 -10px 14px rgba(0, 0, 0, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
   z-index: 2;
-  pointer-events: none;
+}
+
+.black-key:hover {
+  filter: brightness(1.16);
+}
+
+.black-key:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.5),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .footer {
