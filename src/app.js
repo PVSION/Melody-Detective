@@ -90,7 +90,6 @@ function createKeyboard() {
 
     key.className = "key white-key";
     key.type = "button";
-    key.textContent = note.name;
     key.setAttribute("aria-label", `Guess ${note.name}`);
     key.addEventListener("click", () => handleGuess(index));
 
@@ -106,7 +105,6 @@ function createKeyboard() {
 
     key.className = "key black-key";
     key.type = "button";
-    key.textContent = note.name;
     key.style.setProperty("--key-left", `${note.position}%`);
     key.setAttribute("aria-label", `Guess ${note.name}`);
     key.addEventListener("click", () => handleGuess(index));
