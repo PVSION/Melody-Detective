@@ -83,7 +83,7 @@ h1 {
   align-self: center;
 }
 
-.hidden {
+.screen.hidden {
   display: none;
 }
 
