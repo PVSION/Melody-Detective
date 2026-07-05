@@ -17,6 +17,30 @@ const notes = [
 const playButton = document.querySelector("#play-note");
 const feedback = document.querySelector("#feedback");
 const keyboard = document.querySelector("#keyboard");
+const menuScreen = document.querySelector("#menu-screen");
+const practiceScreen = document.querySelector("#practice-screen");
+const startPracticeButton = document.querySelector("#start-practice");
+const backToMenuButton = document.querySelector("#back-to-menu");
+const practiceSummary = document.querySelector("#practice-summary");
+const settingOptions = document.querySelectorAll(".setting-option");
+
+const settings = {
+  instrument: "piano",
+  mode: "single-note",
+  difficulty: "beginner"
+};
+
+const settingLabels = {
+  instrument: {
+    piano: "Piano"
+  },
+  mode: {
+    "single-note": "Find One Note"
+  },
+  difficulty: {
+    beginner: "Beginner"
+  }
+};
 
 let audioContext;
 let mysteryNoteIndex = chooseRandomNoteIndex();
@@ -56,6 +80,47 @@ function playFrequency(frequency) {
 function showFeedback(message, type) {
   feedback.textContent = message;
   feedback.className = `feedback ${type}`;
+}
+
+function updatePracticeSummary() {
+  const instrument = settingLabels.instrument[settings.instrument];
+  const mode = settingLabels.mode[settings.mode];
+  const difficulty = settingLabels.difficulty[settings.difficulty];
+
+  practiceSummary.textContent = `${instrument} - ${mode} - ${difficulty}`;
+}
+
+function resetPracticeRound() {
+  mysteryNoteIndex = chooseRandomNoteIndex();
+  hasPlayedMysteryNote = false;
+  showFeedback("Ready when you are.", "");
+}
+
+function showMenu() {
+  practiceScreen.classList.add("hidden");
+  menuScreen.classList.remove("hidden");
+  resetPracticeRound();
+}
+
+function startPractice() {
+  updatePracticeSummary();
+  resetPracticeRound();
+  menuScreen.classList.add("hidden");
+  practiceScreen.classList.remove("hidden");
+}
+
+function handleSettingChoice(option) {
+  const setting = option.dataset.setting;
+  const value = option.dataset.value;
+
+  settings[setting] = value;
+
+  document.querySelectorAll(`[data-setting="${setting}"]`).forEach((settingOption) => {
+    const isSelected = settingOption === option;
+
+    settingOption.classList.toggle("selected", isSelected);
+    settingOption.setAttribute("aria-pressed", String(isSelected));
+  });
 }
 
 function handleGuess(guessedNoteIndex) {
@@ -119,4 +184,12 @@ playButton.addEventListener("click", () => {
   showFeedback("Find that note on the keyboard.", "");
 });
 
+startPracticeButton.addEventListener("click", startPractice);
+backToMenuButton.addEventListener("click", showMenu);
+
+settingOptions.forEach((option) => {
+  option.addEventListener("click", () => handleSettingChoice(option));
+});
+
 createKeyboard();
+updatePracticeSummary();

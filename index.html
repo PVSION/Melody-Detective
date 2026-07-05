@@ -16,20 +16,62 @@
         </div>
       </header>
 
-      <section class="game-card" aria-label="Melody Detective game">
-        <p class="instructions">
-          Press Play Note, listen carefully, then tap the piano key that matches the mystery note.
-        </p>
-
-        <button id="play-note" class="play-button" type="button">Play Note</button>
-
-        <div class="piano-shell">
-          <div id="keyboard" class="keyboard" aria-label="Virtual piano keyboard"></div>
+      <section id="menu-screen" class="menu-card screen" aria-label="Practice setup">
+        <div class="menu-intro">
+          <p class="section-label">Choose your practice</p>
+          <h2>Set up today's ear training.</h2>
+          <p>
+            Start with the piano, find one mystery note, and keep the challenge beginner-friendly.
+          </p>
         </div>
 
-        <p id="feedback" class="feedback" role="status" aria-live="polite">
-          Ready when you are.
-        </p>
+        <div class="settings-grid" aria-label="Practice settings">
+          <div class="setting-group">
+            <p class="setting-label">Instrument</p>
+            <button class="setting-option selected" type="button" data-setting="instrument" data-value="piano" aria-pressed="true">
+              Piano
+            </button>
+          </div>
+
+          <div class="setting-group">
+            <p class="setting-label">Mode</p>
+            <button class="setting-option selected" type="button" data-setting="mode" data-value="single-note" aria-pressed="true">
+              Find One Note
+            </button>
+          </div>
+
+          <div class="setting-group">
+            <p class="setting-label">Difficulty</p>
+            <button class="setting-option selected" type="button" data-setting="difficulty" data-value="beginner" aria-pressed="true">
+              Beginner
+            </button>
+          </div>
+        </div>
+
+        <button id="start-practice" class="play-button" type="button">Start Practice</button>
+      </section>
+
+      <section id="practice-screen" class="screen hidden" aria-label="Piano practice">
+        <div class="practice-topbar">
+          <button id="back-to-menu" class="secondary-button" type="button">Back to Menu</button>
+          <p id="practice-summary" class="practice-summary">Piano - Find One Note - Beginner</p>
+        </div>
+
+        <div class="game-card" aria-label="Melody Detective game">
+          <p class="instructions">
+            Press Play Note, listen carefully, then tap the piano key that matches the mystery note.
+          </p>
+
+          <button id="play-note" class="play-button" type="button">Play Note</button>
+
+          <div class="piano-shell">
+            <div id="keyboard" class="keyboard" aria-label="Virtual piano keyboard"></div>
+          </div>
+
+          <p id="feedback" class="feedback" role="status" aria-live="polite">
+            Ready when you are.
+          </p>
+        </div>
       </section>
 
       <footer class="footer">
