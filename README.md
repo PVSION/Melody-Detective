@@ -5,6 +5,8 @@ Melody Detective is a tiny web app for learning to play melodies by ear.
 Version 0.1 has one puzzle:
 
 1. Choose the current practice setup from the start menu.
+   - **Beginner** uses white keys only.
+   - **Intermediate** includes black keys.
 2. Press **Start Practice**.
 3. Press **Play Note**.
 4. Listen to the mystery note.

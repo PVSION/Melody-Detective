@@ -42,7 +42,8 @@ const settingLabels = {
     "single-note": "Find One Note"
   },
   difficulty: {
-    beginner: "Beginner"
+    beginner: "Beginner",
+    intermediate: "Intermediate"
   }
 };
 
@@ -51,8 +52,22 @@ let mysteryNoteIndex = chooseRandomNoteIndex();
 let hasPlayedMysteryNote = false;
 let lastGuessIndex = null;
 
+function getActiveNoteIndexes() {
+  if (settings.difficulty === "beginner") {
+    return notes
+      .map((note, index) => ({ note, index }))
+      .filter((item) => item.note.keyType === "white")
+      .map((item) => item.index);
+  }
+
+  return notes.map((note, index) => index);
+}
+
 function chooseRandomNoteIndex() {
-  return Math.floor(Math.random() * notes.length);
+  const activeNoteIndexes = getActiveNoteIndexes();
+  const randomIndex = Math.floor(Math.random() * activeNoteIndexes.length);
+
+  return activeNoteIndexes[randomIndex];
 }
 
 function getAudioContext() {
@@ -127,6 +142,7 @@ function resetPracticeRound() {
   hasPlayedMysteryNote = false;
   playButton.disabled = false;
   hideListeningTools();
+  updateKeyboardAvailability();
   showFeedback("Ready when you are.", "");
 }
 
@@ -155,6 +171,8 @@ function handleSettingChoice(option) {
     settingOption.classList.toggle("selected", isSelected);
     settingOption.setAttribute("aria-pressed", String(isSelected));
   });
+
+  resetPracticeRound();
 }
 
 function handleGuess(guessedNoteIndex) {
@@ -194,6 +212,7 @@ function createKeyboard() {
 
     key.className = "key white-key";
     key.type = "button";
+    key.dataset.noteIndex = index;
     key.setAttribute("aria-label", `Guess ${note.name}`);
     key.addEventListener("click", () => handleGuess(index));
 
@@ -209,11 +228,21 @@ function createKeyboard() {
 
     key.className = "key black-key";
     key.type = "button";
+    key.dataset.noteIndex = index;
     key.style.setProperty("--key-left", `${note.position}%`);
     key.setAttribute("aria-label", `Guess ${note.name}`);
     key.addEventListener("click", () => handleGuess(index));
 
     keyboard.appendChild(key);
+  });
+}
+
+function updateKeyboardAvailability() {
+  const blackKeysEnabled = settings.difficulty !== "beginner";
+
+  keyboard.querySelectorAll(".black-key").forEach((key) => {
+    key.disabled = !blackKeysEnabled;
+    key.setAttribute("aria-disabled", String(!blackKeysEnabled));
   });
 }
 
@@ -237,4 +266,5 @@ settingOptions.forEach((option) => {
 });
 
 createKeyboard();
+updateKeyboardAvailability();
 updatePracticeSummary();

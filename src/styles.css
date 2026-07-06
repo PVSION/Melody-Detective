@@ -138,6 +138,12 @@ h2 {
   gap: 8px;
 }
 
+.option-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
 .setting-option {
   min-height: 58px;
   border: 1px solid var(--border);
@@ -405,6 +411,17 @@ h2 {
     0 5px 10px rgba(0, 0, 0, 0.5),
     inset 0 -6px 10px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.black-key:disabled {
+  cursor: not-allowed;
+  filter: saturate(0.45) brightness(0.72);
+  opacity: 0.72;
+  transform: none;
+}
+
+.black-key:disabled:active {
+  transform: none;
 }
 
 .footer {
