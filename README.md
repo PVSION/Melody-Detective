@@ -8,8 +8,10 @@ Version 0.1 has one puzzle:
 2. Press **Start Practice**.
 3. Press **Play Note**.
 4. Listen to the mystery note.
-5. Click the matching key on the virtual piano.
-6. The app tells you **Correct**, **Too High**, or **Too Low**.
+5. Replay the mystery note if you need to hear it again.
+6. Click the matching key on the virtual piano.
+7. The app tells you **Correct**, **Too High**, or **Too Low**.
+8. After a wrong guess, compare the mystery note with your guess.
 
 ## How to Run
 

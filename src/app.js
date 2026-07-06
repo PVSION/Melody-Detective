@@ -17,6 +17,11 @@ const notes = [
 const playButton = document.querySelector("#play-note");
 const feedback = document.querySelector("#feedback");
 const keyboard = document.querySelector("#keyboard");
+const listeningTools = document.querySelector("#listening-tools");
+const compareTools = document.querySelector("#compare-tools");
+const replayNoteButton = document.querySelector("#replay-note");
+const playMysteryNoteButton = document.querySelector("#play-mystery-note");
+const playYourGuessButton = document.querySelector("#play-your-guess");
 const menuScreen = document.querySelector("#menu-screen");
 const practiceScreen = document.querySelector("#practice-screen");
 const startPracticeButton = document.querySelector("#start-practice");
@@ -45,6 +50,7 @@ const settingLabels = {
 let audioContext;
 let mysteryNoteIndex = chooseRandomNoteIndex();
 let hasPlayedMysteryNote = false;
+let lastGuessIndex = null;
 
 function chooseRandomNoteIndex() {
   return Math.floor(Math.random() * notes.length);
@@ -82,6 +88,33 @@ function showFeedback(message, type) {
   feedback.className = `feedback ${type}`;
 }
 
+function hideListeningTools() {
+  listeningTools.classList.add("hidden");
+  compareTools.classList.add("hidden");
+  lastGuessIndex = null;
+}
+
+function showReplayTool() {
+  listeningTools.classList.remove("hidden");
+}
+
+function showCompareTools() {
+  showReplayTool();
+  compareTools.classList.remove("hidden");
+}
+
+function playMysteryNote() {
+  playFrequency(notes[mysteryNoteIndex].frequency);
+}
+
+function playLastGuess() {
+  if (lastGuessIndex === null) {
+    return;
+  }
+
+  playFrequency(notes[lastGuessIndex].frequency);
+}
+
 function updatePracticeSummary() {
   const instrument = settingLabels.instrument[settings.instrument];
   const mode = settingLabels.mode[settings.mode];
@@ -93,6 +126,7 @@ function updatePracticeSummary() {
 function resetPracticeRound() {
   mysteryNoteIndex = chooseRandomNoteIndex();
   hasPlayedMysteryNote = false;
+  hideListeningTools();
   showFeedback("Ready when you are.", "");
 }
 
@@ -135,8 +169,12 @@ function handleGuess(guessedNoteIndex) {
     showFeedback(`Correct - ${notes[mysteryNoteIndex].name}`, "correct");
     mysteryNoteIndex = chooseRandomNoteIndex();
     hasPlayedMysteryNote = false;
+    hideListeningTools();
     return;
   }
+
+  lastGuessIndex = guessedNoteIndex;
+  showCompareTools();
 
   if (guessedNoteIndex > mysteryNoteIndex) {
     showFeedback("Too High", "hint");
@@ -179,11 +217,17 @@ function createKeyboard() {
 }
 
 playButton.addEventListener("click", () => {
-  playFrequency(notes[mysteryNoteIndex].frequency);
+  playMysteryNote();
   hasPlayedMysteryNote = true;
+  showReplayTool();
+  compareTools.classList.add("hidden");
+  lastGuessIndex = null;
   showFeedback("Find that note on the keyboard.", "");
 });
 
+replayNoteButton.addEventListener("click", playMysteryNote);
+playMysteryNoteButton.addEventListener("click", playMysteryNote);
+playYourGuessButton.addEventListener("click", playLastGuess);
 startPracticeButton.addEventListener("click", startPractice);
 backToMenuButton.addEventListener("click", showMenu);
 

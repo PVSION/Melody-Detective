@@ -83,7 +83,9 @@ h1 {
   align-self: center;
 }
 
-.screen.hidden {
+.screen.hidden,
+.listening-tools.hidden,
+.compare-tools.hidden {
   display: none;
 }
 
@@ -190,6 +192,21 @@ h2 {
 
 .secondary-button:active {
   transform: translateY(1px);
+}
+
+.listening-tools {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.compare-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 .practice-summary {
@@ -423,6 +440,16 @@ h2 {
 
   .practice-summary {
     text-align: left;
+  }
+
+  .listening-tools,
+  .compare-tools {
+    width: 100%;
+  }
+
+  .listening-tools .secondary-button,
+  .compare-tools .secondary-button {
+    flex: 1 1 140px;
   }
 
   .keyboard {
