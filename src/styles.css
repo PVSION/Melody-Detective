@@ -262,6 +262,14 @@ h2 {
   box-shadow: 0 24px 48px rgba(74, 163, 255, 0.32);
 }
 
+.play-button:disabled {
+  cursor: not-allowed;
+  filter: saturate(0.6) brightness(0.78);
+  opacity: 0.62;
+  transform: none;
+  box-shadow: none;
+}
+
 .play-button:active {
   transform: translateY(1px) scale(0.98);
 }

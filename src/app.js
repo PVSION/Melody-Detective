@@ -20,7 +20,6 @@ const keyboard = document.querySelector("#keyboard");
 const listeningTools = document.querySelector("#listening-tools");
 const compareTools = document.querySelector("#compare-tools");
 const replayNoteButton = document.querySelector("#replay-note");
-const playMysteryNoteButton = document.querySelector("#play-mystery-note");
 const playYourGuessButton = document.querySelector("#play-your-guess");
 const menuScreen = document.querySelector("#menu-screen");
 const practiceScreen = document.querySelector("#practice-screen");
@@ -126,6 +125,7 @@ function updatePracticeSummary() {
 function resetPracticeRound() {
   mysteryNoteIndex = chooseRandomNoteIndex();
   hasPlayedMysteryNote = false;
+  playButton.disabled = false;
   hideListeningTools();
   showFeedback("Ready when you are.", "");
 }
@@ -169,6 +169,7 @@ function handleGuess(guessedNoteIndex) {
     showFeedback(`Correct - ${notes[mysteryNoteIndex].name}`, "correct");
     mysteryNoteIndex = chooseRandomNoteIndex();
     hasPlayedMysteryNote = false;
+    playButton.disabled = false;
     hideListeningTools();
     return;
   }
@@ -219,6 +220,7 @@ function createKeyboard() {
 playButton.addEventListener("click", () => {
   playMysteryNote();
   hasPlayedMysteryNote = true;
+  playButton.disabled = true;
   showReplayTool();
   compareTools.classList.add("hidden");
   lastGuessIndex = null;
@@ -226,7 +228,6 @@ playButton.addEventListener("click", () => {
 });
 
 replayNoteButton.addEventListener("click", playMysteryNote);
-playMysteryNoteButton.addEventListener("click", playMysteryNote);
 playYourGuessButton.addEventListener("click", playLastGuess);
 startPracticeButton.addEventListener("click", startPractice);
 backToMenuButton.addEventListener("click", showMenu);
