@@ -1,17 +1,17 @@
 const notes = [
-  { name: "C4", frequency: 261.63, keyType: "white" },
-  { name: "C#4", frequency: 277.18, keyType: "black", position: 12.5 },
-  { name: "D4", frequency: 293.66, keyType: "white" },
-  { name: "D#4", frequency: 311.13, keyType: "black", position: 25 },
-  { name: "E4", frequency: 329.63, keyType: "white" },
-  { name: "F4", frequency: 349.23, keyType: "white" },
-  { name: "F#4", frequency: 369.99, keyType: "black", position: 50 },
-  { name: "G4", frequency: 392.0, keyType: "white" },
-  { name: "G#4", frequency: 415.3, keyType: "black", position: 62.5 },
-  { name: "A4", frequency: 440.0, keyType: "white" },
-  { name: "A#4", frequency: 466.16, keyType: "black", position: 75 },
-  { name: "B4", frequency: 493.88, keyType: "white" },
-  { name: "C5", frequency: 523.25, keyType: "white" }
+  { name: "C4", label: "C", frequency: 261.63, keyType: "white" },
+  { name: "C#4", label: "C#", frequency: 277.18, keyType: "black", position: 12.5 },
+  { name: "D4", label: "D", frequency: 293.66, keyType: "white" },
+  { name: "D#4", label: "D#", frequency: 311.13, keyType: "black", position: 25 },
+  { name: "E4", label: "E", frequency: 329.63, keyType: "white" },
+  { name: "F4", label: "F", frequency: 349.23, keyType: "white" },
+  { name: "F#4", label: "F#", frequency: 369.99, keyType: "black", position: 50 },
+  { name: "G4", label: "G", frequency: 392.0, keyType: "white" },
+  { name: "G#4", label: "G#", frequency: 415.3, keyType: "black", position: 62.5 },
+  { name: "A4", label: "A", frequency: 440.0, keyType: "white" },
+  { name: "A#4", label: "A#", frequency: 466.16, keyType: "black", position: 75 },
+  { name: "B4", label: "B", frequency: 493.88, keyType: "white" },
+  { name: "C5", label: "C", frequency: 523.25, keyType: "white" }
 ];
 
 const playButton = document.querySelector("#play-note");
@@ -142,7 +142,7 @@ function updateModeText() {
   if (settings.mode === "pitch-movement") {
     instructions.textContent = "Find the starting note on the piano. Then follow the movement command.";
     movementCommand.textContent = pitchMovementPhase === "choose-start"
-      ? `Start at ${notes[startNoteIndex].name}`
+      ? `Start at ${notes[startNoteIndex].label}`
       : describeMovement(movementStep);
     movementCommand.classList.remove("hidden");
     playButton.textContent = "Play Starting Note";
@@ -274,7 +274,7 @@ function handleGuess(guessedNoteIndex) {
   }
 
   if (guessedNoteIndex === mysteryNoteIndex) {
-    showFeedback(`Correct - ${notes[mysteryNoteIndex].name}`, "correct");
+    showFeedback(`Correct - ${notes[mysteryNoteIndex].label}`, "correct");
     if (settings.mode === "pitch-movement") {
       const challenge = chooseMovementChallenge();
 
@@ -317,7 +317,7 @@ function createKeyboard() {
     key.className = "key white-key";
     key.type = "button";
     key.dataset.noteIndex = index;
-    key.setAttribute("aria-label", `Guess ${note.name}`);
+    key.setAttribute("aria-label", `Guess ${note.label}`);
     key.addEventListener("click", () => handleGuess(index));
 
     keyboard.appendChild(key);
@@ -334,7 +334,7 @@ function createKeyboard() {
     key.type = "button";
     key.dataset.noteIndex = index;
     key.style.setProperty("--key-left", `${note.position}%`);
-    key.setAttribute("aria-label", `Guess ${note.name}`);
+    key.setAttribute("aria-label", `Guess ${note.label}`);
     key.addEventListener("click", () => handleGuess(index));
 
     keyboard.appendChild(key);
