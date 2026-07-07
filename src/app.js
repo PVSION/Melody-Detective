@@ -94,7 +94,7 @@ let sessionStats = createFreshSessionStats();
 let challengeFinished = false;
 
 function isStreakChallengeMode() {
-  return settings.mode === "single-note";
+  return settings.mode === "single-note" && settings.difficulty !== "beginner";
 }
 
 function createFreshSessionStats() {
@@ -434,9 +434,7 @@ function updatePracticeSummary() {
 }
 
 function updateStartButtonText() {
-  startPracticeButton.textContent = isStreakChallengeMode()
-    ? "Choose Challenge"
-    : "Start Practice";
+  startPracticeButton.textContent = "Start Practice";
 }
 
 function resetPracticeRound() {
