@@ -313,6 +313,62 @@ h2 {
   color: var(--high-low);
 }
 
+.success-moment {
+  width: min(440px, 100%);
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  margin-top: -4px;
+  padding: 16px 18px;
+  border: 1px solid rgba(89, 217, 142, 0.28);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(89, 217, 142, 0.16), rgba(74, 163, 255, 0.08)),
+    rgba(255, 255, 255, 0.045);
+  box-shadow:
+    0 18px 42px rgba(89, 217, 142, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: successRise 420ms ease both;
+}
+
+.success-moment.hidden {
+  display: none;
+}
+
+.success-kicker,
+.success-title,
+.success-note {
+  margin: 0;
+  text-align: center;
+}
+
+.success-kicker {
+  color: var(--correct);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.success-title {
+  color: var(--ink);
+  font-size: clamp(1.55rem, 4vw, 2.25rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.success-title span {
+  display: inline-block;
+  animation: letterPop 520ms ease both;
+  animation-delay: calc(var(--letter-index) * 34ms);
+}
+
+.success-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
 .piano-shell {
   width: 100%;
   padding: clamp(12px, 2.6vw, 22px);
@@ -440,6 +496,35 @@ h2 {
   line-height: 1.5;
   margin: 14px 0 0;
   text-align: center;
+}
+
+@keyframes successRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes letterPop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.92);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.04);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @media (max-width: 640px) {

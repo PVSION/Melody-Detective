@@ -32,7 +32,7 @@ Version 0.1 has one puzzle:
 4. Listen to the mystery note.
 5. Replay the mystery note if you need to hear it again.
 6. Click the matching key on the virtual piano.
-7. The app tells you **Correct**, **Too High**, or **Too Low**.
+7. The app tells you when you are correct or gives a subtle direction cue.
 8. After a wrong guess, compare the mystery note with your guess.
 
 ## How to Run

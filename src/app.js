@@ -18,6 +18,9 @@ const playButton = document.querySelector("#play-note");
 const instructions = document.querySelector("#instructions");
 const movementCommand = document.querySelector("#movement-command");
 const feedback = document.querySelector("#feedback");
+const successMoment = document.querySelector("#success-moment");
+const successTitle = document.querySelector(".success-title");
+const successNote = document.querySelector(".success-note");
 const keyboard = document.querySelector("#keyboard");
 const listeningTools = document.querySelector("#listening-tools");
 const compareTools = document.querySelector("#compare-tools");
@@ -161,9 +164,36 @@ function playFrequency(frequency) {
   oscillator.stop(context.currentTime + 0.95);
 }
 
-function showFeedback(message, type) {
+function showSuccessMoment(noteLabel) {
+  const successMessage = "You got it!";
+
+  successTitle.textContent = "";
+
+  successMessage.split("").forEach((letter, index) => {
+    const letterSpan = document.createElement("span");
+
+    letterSpan.textContent = letter === " " ? "\u00a0" : letter;
+    letterSpan.style.setProperty("--letter-index", index);
+    successTitle.appendChild(letterSpan);
+  });
+
+  successNote.textContent = `Solved note: ${noteLabel}`;
+  successMoment.classList.remove("hidden");
+}
+
+function hideSuccessMoment() {
+  successMoment.classList.add("hidden");
+}
+
+function showFeedback(message, type, noteLabel) {
   feedback.textContent = message;
   feedback.className = `feedback ${type}`;
+
+  if (type === "correct") {
+    showSuccessMoment(noteLabel);
+  } else {
+    hideSuccessMoment();
+  }
 }
 
 function updateModeText() {
@@ -300,7 +330,7 @@ function handleGuess(guessedNoteIndex) {
   }
 
   if (guessedNoteIndex === mysteryNoteIndex) {
-    showFeedback(`Correct - ${notes[mysteryNoteIndex].label}`, "correct");
+    showFeedback(`Correct - ${notes[mysteryNoteIndex].label}`, "correct", notes[mysteryNoteIndex].label);
     if (settings.mode === "pitch-movement") {
       startNoteLabel = chooseStartNoteLabel();
       startNoteIndex = getActiveNoteIndexes().find((index) => notes[index].label === startNoteLabel);
@@ -326,9 +356,9 @@ function handleGuess(guessedNoteIndex) {
   showCompareTools();
 
   if (guessedNoteIndex > mysteryNoteIndex) {
-    showFeedback("Too High", "hint");
+    showFeedback("Almost - listen lower", "hint");
   } else {
-    showFeedback("Too Low", "hint");
+    showFeedback("Almost - listen higher", "hint");
   }
 }
 
