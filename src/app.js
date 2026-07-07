@@ -62,7 +62,8 @@ const settingLabels = {
   },
   difficulty: {
     beginner: "Beginner",
-    intermediate: "Intermediate"
+    intermediate: "Intermediate",
+    advanced: "Advanced"
   },
   streakTarget: {
     5: "5 Streak",
@@ -109,7 +110,7 @@ function createFreshSessionStats() {
 }
 
 function getActiveNoteIndexes() {
-  if (settings.difficulty === "beginner") {
+  if (settings.difficulty !== "advanced") {
     return notes
       .map((note, index) => ({ note, index }))
       .filter((item) => item.note.keyType === "white")
@@ -623,7 +624,7 @@ function createKeyboard() {
 }
 
 function updateKeyboardAvailability() {
-  const blackKeysEnabled = settings.difficulty !== "beginner";
+  const blackKeysEnabled = settings.difficulty === "advanced";
 
   keyboard.querySelectorAll(".black-key").forEach((key) => {
     key.disabled = !blackKeysEnabled;
