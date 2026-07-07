@@ -77,17 +77,20 @@ function chooseRandomNoteIndex() {
 
 function chooseMovementChallenge() {
   const activeNoteIndexes = getActiveNoteIndexes();
-  const movementOptions = settings.difficulty === "beginner"
-    ? [-2, 2]
-    : [-2, -1, 1, 2];
+  const movementOptions = [-2, -1, 1, 2];
   const possibleChallenges = [];
 
   activeNoteIndexes.forEach((startIndex) => {
-    movementOptions.forEach((step) => {
-      const targetIndex = startIndex + step;
+    movementOptions.forEach((indexOffset) => {
+      const targetIndex = startIndex + indexOffset;
 
       if (activeNoteIndexes.includes(targetIndex)) {
-        possibleChallenges.push({ startIndex, step, targetIndex });
+        possibleChallenges.push({
+          startIndex,
+          indexOffset,
+          targetIndex,
+          semitoneDistance: targetIndex - startIndex
+        });
       }
     });
   });
@@ -192,7 +195,7 @@ function resetPracticeRound() {
     const challenge = chooseMovementChallenge();
 
     startNoteIndex = challenge.startIndex;
-    movementStep = challenge.step;
+    movementStep = challenge.semitoneDistance;
     mysteryNoteIndex = challenge.targetIndex;
   } else {
     mysteryNoteIndex = chooseRandomNoteIndex();
@@ -251,7 +254,7 @@ function handleGuess(guessedNoteIndex) {
       const challenge = chooseMovementChallenge();
 
       startNoteIndex = challenge.startIndex;
-      movementStep = challenge.step;
+      movementStep = challenge.semitoneDistance;
       mysteryNoteIndex = challenge.targetIndex;
     } else {
       mysteryNoteIndex = chooseRandomNoteIndex();
