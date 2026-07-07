@@ -62,6 +62,12 @@
               <button class="setting-option" type="button" data-setting="streakTarget" data-value="10" aria-pressed="false">
                 10 Streak
               </button>
+              <button class="setting-option" type="button" data-setting="streakTarget" data-value="20" aria-pressed="false">
+                20 Streak
+              </button>
+              <button class="setting-option" type="button" data-setting="streakTarget" data-value="30" aria-pressed="false">
+                30 Streak
+              </button>
             </div>
           </div>
         </div>
@@ -88,6 +94,10 @@
             <div class="session-stat">
               <span>Accuracy</span>
               <strong id="accuracy-rate">100%</strong>
+            </div>
+            <div class="session-stat">
+              <span>Attempts</span>
+              <strong id="attempt-count">0</strong>
             </div>
             <div class="session-stat">
               <span>Misses</span>
@@ -122,6 +132,16 @@
             <p class="success-kicker">Case solved</p>
             <p class="success-title">You got it!</p>
             <p class="success-note"></p>
+          </div>
+
+          <div id="challenge-complete" class="challenge-complete hidden" role="status" aria-live="polite">
+            <p class="success-kicker">Challenge complete</p>
+            <h2>Take a bow.</h2>
+            <p id="challenge-complete-copy">You reached your streak goal.</p>
+            <div class="challenge-actions">
+              <button id="aim-higher" class="play-button" type="button">Aim Higher</button>
+              <button id="continue-challenge" class="secondary-button" type="button">Continue Current Challenge</button>
+            </div>
           </div>
         </div>
 

@@ -87,7 +87,8 @@ h1 {
 .listening-tools.hidden,
 .compare-tools.hidden,
 .movement-command.hidden,
-.play-button.hidden {
+.play-button.hidden,
+.challenge-complete.hidden {
   display: none;
 }
 
@@ -245,7 +246,7 @@ h2 {
 .session-panel {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
 }
 
@@ -401,6 +402,46 @@ h2 {
   color: var(--muted);
   font-size: 0.95rem;
   font-weight: 800;
+}
+
+.challenge-complete {
+  width: min(560px, 100%);
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid rgba(117, 189, 255, 0.34);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(74, 163, 255, 0.16), rgba(89, 217, 142, 0.12)),
+    rgba(255, 255, 255, 0.055);
+  box-shadow:
+    0 22px 54px rgba(74, 163, 255, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  text-align: center;
+  animation: successRise 420ms ease both;
+}
+
+.challenge-complete h2,
+.challenge-complete p {
+  margin: 0;
+}
+
+.challenge-complete h2 {
+  font-size: clamp(1.7rem, 5vw, 2.6rem);
+}
+
+.challenge-complete p:not(.success-kicker) {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.challenge-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .piano-shell {

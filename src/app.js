@@ -21,6 +21,10 @@ const feedback = document.querySelector("#feedback");
 const successMoment = document.querySelector("#success-moment");
 const successTitle = document.querySelector(".success-title");
 const successNote = document.querySelector(".success-note");
+const challengeComplete = document.querySelector("#challenge-complete");
+const challengeCompleteCopy = document.querySelector("#challenge-complete-copy");
+const aimHigherButton = document.querySelector("#aim-higher");
+const continueChallengeButton = document.querySelector("#continue-challenge");
 const keyboard = document.querySelector("#keyboard");
 const listeningTools = document.querySelector("#listening-tools");
 const compareTools = document.querySelector("#compare-tools");
@@ -34,6 +38,7 @@ const practiceSummary = document.querySelector("#practice-summary");
 const rankLabel = document.querySelector("#rank-label");
 const streakCount = document.querySelector("#streak-count");
 const accuracyRate = document.querySelector("#accuracy-rate");
+const attemptCount = document.querySelector("#attempt-count");
 const missCount = document.querySelector("#miss-count");
 const settingOptions = document.querySelectorAll(".setting-option");
 
@@ -58,9 +63,13 @@ const settingLabels = {
   },
   streakTarget: {
     5: "5 Streak",
-    10: "10 Streak"
+    10: "10 Streak",
+    20: "20 Streak",
+    30: "30 Streak"
   }
 };
+
+const streakTargets = [5, 10, 20, 30];
 
 const rankLevels = [
   { name: "Beginner", minSolved: 0, minAccuracy: 0, minBestStreak: 0 },
@@ -79,6 +88,7 @@ let pitchMovementPhase = "choose-start";
 let hasPlayedMysteryNote = false;
 let lastGuessIndex = null;
 let sessionStats = createFreshSessionStats();
+let challengeFinished = false;
 
 function createFreshSessionStats() {
   return {
@@ -217,6 +227,10 @@ function hideSuccessMoment() {
   successMoment.classList.add("hidden");
 }
 
+function hideChallengeComplete() {
+  challengeComplete.classList.add("hidden");
+}
+
 function showFeedback(message, type, noteLabel) {
   feedback.textContent = message;
   feedback.className = `feedback ${type}`;
@@ -229,6 +243,12 @@ function showFeedback(message, type, noteLabel) {
 }
 
 function updateModeText() {
+  if (challengeFinished) {
+    instructions.textContent = "Challenge complete. Choose whether to aim higher or keep practicing this streak.";
+    playButton.disabled = true;
+    return;
+  }
+
   if (settings.mode === "pitch-movement") {
     instructions.textContent = "Tap the starting note on the piano. Then follow the movement command.";
     movementCommand.textContent = pitchMovementPhase === "choose-start"
@@ -277,13 +297,17 @@ function playLastGuess() {
 }
 
 function getSessionAccuracy() {
-  const totalAttempts = sessionStats.solved + sessionStats.misses;
+  const totalAttempts = getSessionAttempts();
 
   if (totalAttempts === 0) {
     return 100;
   }
 
   return Math.round((sessionStats.solved / totalAttempts) * 100);
+}
+
+function getSessionAttempts() {
+  return sessionStats.solved + sessionStats.misses;
 }
 
 function updateRank() {
@@ -306,6 +330,7 @@ function updateSessionPanel() {
   rankLabel.textContent = rankLevels[sessionStats.rankIndex].name;
   streakCount.textContent = `${sessionStats.currentStreak} / ${streakTarget}`;
   accuracyRate.textContent = `${getSessionAccuracy()}%`;
+  attemptCount.textContent = getSessionAttempts();
   missCount.textContent = sessionStats.misses;
 }
 
@@ -322,11 +347,11 @@ function getSolveMessage() {
 }
 
 function recordCorrectAnswer() {
-  const solvedInTwoTriesOrLess = sessionStats.roundMisses <= 1;
+  const cleanSolve = sessionStats.roundMisses === 0;
 
   sessionStats.solved += 1;
 
-  if (solvedInTwoTriesOrLess) {
+  if (cleanSolve) {
     sessionStats.currentStreak += 1;
   } else {
     sessionStats.currentStreak = 0;
@@ -340,7 +365,43 @@ function recordCorrectAnswer() {
 function recordMiss() {
   sessionStats.misses += 1;
   sessionStats.roundMisses += 1;
+  sessionStats.currentStreak = 0;
   updateSessionPanel();
+}
+
+function completeChallenge() {
+  const streakTarget = Number(settings.streakTarget);
+
+  challengeFinished = true;
+  hideListeningTools();
+  playButton.disabled = true;
+  challengeCompleteCopy.textContent = `You reached ${streakTarget} clean answers in a row.`;
+  challengeComplete.classList.remove("hidden");
+  updateModeText();
+}
+
+function startFreshSession() {
+  challengeFinished = false;
+  sessionStats = createFreshSessionStats();
+  hideChallengeComplete();
+  updatePracticeSummary();
+  updateSessionPanel();
+  resetPracticeRound();
+}
+
+function chooseNextStreakTarget() {
+  const currentTarget = Number(settings.streakTarget);
+  const nextTarget = streakTargets.find((target) => target > currentTarget) || currentTarget + 10;
+
+  settings.streakTarget = String(nextTarget);
+  settingLabels.streakTarget[settings.streakTarget] = `${nextTarget} Streak`;
+
+  document.querySelectorAll('[data-setting="streakTarget"]').forEach((settingOption) => {
+    const isSelected = settingOption.dataset.value === settings.streakTarget;
+
+    settingOption.classList.toggle("selected", isSelected);
+    settingOption.setAttribute("aria-pressed", String(isSelected));
+  });
 }
 
 function updatePracticeSummary() {
@@ -354,6 +415,7 @@ function updatePracticeSummary() {
 
 function resetPracticeRound() {
   sessionStats.roundMisses = 0;
+  hideChallengeComplete();
 
   if (settings.mode === "pitch-movement") {
     startNoteLabel = chooseStartNoteLabel();
@@ -385,10 +447,7 @@ function showMenu() {
 }
 
 function startPractice() {
-  sessionStats = createFreshSessionStats();
-  updatePracticeSummary();
-  updateSessionPanel();
-  resetPracticeRound();
+  startFreshSession();
   menuScreen.classList.add("hidden");
   practiceScreen.classList.remove("hidden");
 }
@@ -412,6 +471,11 @@ function handleSettingChoice(option) {
 }
 
 function handleGuess(guessedNoteIndex) {
+  if (challengeFinished) {
+    showFeedback("Challenge complete. Choose your next move.", "");
+    return;
+  }
+
   if (settings.mode !== "pitch-movement" && !hasPlayedMysteryNote) {
     showFeedback("Press Play Note first.", "");
     return;
@@ -443,6 +507,11 @@ function handleGuess(guessedNoteIndex) {
 
     recordCorrectAnswer();
     showFeedback(solveMessage, "correct", solvedNoteLabel);
+
+    if (sessionStats.currentStreak >= Number(settings.streakTarget)) {
+      completeChallenge();
+      return;
+    }
 
     if (settings.mode === "pitch-movement") {
       startNoteLabel = chooseStartNoteLabel();
@@ -535,6 +604,11 @@ replayNoteButton.addEventListener("click", playMysteryNote);
 playYourGuessButton.addEventListener("click", playLastGuess);
 startPracticeButton.addEventListener("click", startPractice);
 backToMenuButton.addEventListener("click", showMenu);
+aimHigherButton.addEventListener("click", () => {
+  chooseNextStreakTarget();
+  startFreshSession();
+});
+continueChallengeButton.addEventListener("click", startFreshSession);
 
 settingOptions.forEach((option) => {
   option.addEventListener("click", () => handleSettingChoice(option));
