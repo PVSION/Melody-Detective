@@ -1,6 +1,24 @@
 # Melody Detective
 
-Melody Detective is a tiny web app for learning to play melodies by ear.
+Melody Detective is a web app for learning to recognize notes, understand pitch movement, and build stronger musical instincts by ear.
+
+## Vision
+
+Music is one of the biggest gifts humans have received from God, and it is something that connects all ends of the earth. I have always wanted to be a part of it in a certain sense, and Melody Detective is something I believe can help generations to come hone their skills and discover a passion and ability they may not have known they possessed.
+
+## Why I'm Building This
+
+I do not want Melody Detective to be a simple puzzle or game. I want it to become a tool that genuinely helps musicians grow.
+
+The goal is to create something useful for beginners who are just starting to train their ears, while also giving more advanced musicians a place to sharpen their skill. I want the app to keep people curious, creative, and connected to the process of learning music.
+
+## Long-Term Goal
+
+I see Melody Detective becoming the gold standard for pitch detection and ear training.
+
+Long term, I want it to grow into a teaching platform where students and teachers can connect, practice, and learn from each other. My hope is that Melody Detective can help bridge a needed gap in how the arts are taught today, while making musical growth feel more accessible to both the young and the old.
+
+## Current Version
 
 Version 0.1 has one puzzle:
 
