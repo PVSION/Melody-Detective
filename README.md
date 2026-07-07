@@ -8,7 +8,7 @@ Version 0.1 has one puzzle:
    - **Find One Note** asks you to match one mystery note.
    - **Pitch Movement** asks you to tap a named starting note, then move up or down from there.
    - **Beginner** uses white keys only.
-   - **Intermediate** includes black keys.
+   - **Intermediate** includes black keys and larger pitch movements.
 2. Press **Start Practice**.
 3. Press **Play Note**.
 4. Listen to the mystery note.

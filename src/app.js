@@ -77,32 +77,17 @@ function chooseRandomNoteIndex() {
   return activeNoteIndexes[randomIndex];
 }
 
-function chooseMovementChallenge() {
-  const activeNoteIndexes = getActiveNoteIndexes();
-  const movementOptions = [-2, -1, 1, 2];
-  const possibleChallenges = [];
+function getMovementOptions() {
+  if (settings.difficulty === "beginner") {
+    return [-2, -1, 1, 2];
+  }
 
-  activeNoteIndexes.forEach((startIndex) => {
-    movementOptions.forEach((indexOffset) => {
-      const targetIndex = startIndex + indexOffset;
-
-      if (activeNoteIndexes.includes(targetIndex)) {
-        possibleChallenges.push({
-          startIndex,
-          indexOffset,
-          targetIndex,
-          semitoneDistance: targetIndex - startIndex
-        });
-      }
-    });
-  });
-
-  return possibleChallenges[Math.floor(Math.random() * possibleChallenges.length)];
+  return [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];
 }
 
 function getMovementChallengesForStart(startIndex) {
   const activeNoteIndexes = getActiveNoteIndexes();
-  const movementOptions = [-2, -1, 1, 2];
+  const movementOptions = getMovementOptions();
 
   return movementOptions
     .map((indexOffset) => {
@@ -135,7 +120,16 @@ function chooseStartNoteLabel() {
 
 function describeMovement(step) {
   const direction = step > 0 ? "up" : "down";
-  const distance = Math.abs(step) === 1 ? "a half step" : "a whole step";
+  const stepCount = Math.abs(step);
+  let distance = `${stepCount} half steps`;
+
+  if (stepCount === 1) {
+    distance = "a half step";
+  }
+
+  if (stepCount === 2) {
+    distance = "a whole step";
+  }
 
   return `Go ${direction} ${distance}`;
 }
