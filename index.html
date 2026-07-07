@@ -52,6 +52,18 @@
               </button>
             </div>
           </div>
+
+          <div class="setting-group">
+            <p class="setting-label">Challenge</p>
+            <div class="option-row">
+              <button class="setting-option selected" type="button" data-setting="streakTarget" data-value="5" aria-pressed="true">
+                5 Streak
+              </button>
+              <button class="setting-option" type="button" data-setting="streakTarget" data-value="10" aria-pressed="false">
+                10 Streak
+              </button>
+            </div>
+          </div>
         </div>
 
         <button id="start-practice" class="play-button" type="button">Start Practice</button>
@@ -60,10 +72,29 @@
       <section id="practice-screen" class="screen hidden" aria-label="Piano practice">
         <div class="practice-topbar">
           <button id="back-to-menu" class="secondary-button" type="button">Back to Menu</button>
-          <p id="practice-summary" class="practice-summary">Piano - Find One Note - Beginner</p>
+          <p id="practice-summary" class="practice-summary">Piano - Find One Note - Beginner - 5 Streak</p>
         </div>
 
         <div class="game-card" aria-label="Melody Detective game">
+          <div class="session-panel" aria-label="Session progress">
+            <div class="session-stat">
+              <span>Rank</span>
+              <strong id="rank-label">Beginner</strong>
+            </div>
+            <div class="session-stat">
+              <span>Streak</span>
+              <strong id="streak-count">0 / 5</strong>
+            </div>
+            <div class="session-stat">
+              <span>Accuracy</span>
+              <strong id="accuracy-rate">100%</strong>
+            </div>
+            <div class="session-stat">
+              <span>Misses</span>
+              <strong id="miss-count">0</strong>
+            </div>
+          </div>
+
           <p id="instructions" class="instructions">
             Press Play Note, listen carefully, then tap the piano key that matches the mystery note.
           </p>

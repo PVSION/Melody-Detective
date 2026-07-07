@@ -27,6 +27,7 @@ Version 0.1 has one puzzle:
    - **Pitch Movement** asks you to tap a named starting note, then move up or down from there.
    - **Beginner** uses white keys only.
    - **Intermediate** includes black keys and larger pitch movements.
+   - **Challenge** lets you choose a 5-streak or 10-streak goal.
 2. Press **Start Practice**.
 3. Press **Play Note**.
 4. Listen to the mystery note.
@@ -34,6 +35,18 @@ Version 0.1 has one puzzle:
 6. Click the matching key on the virtual piano.
 7. The app tells you when you are correct or gives a subtle direction cue.
 8. After a wrong guess, compare the mystery note with your guess.
+9. Build your streak and session rank by solving notes in one or two tries.
+
+## Session Progress
+
+Melody Detective currently tracks progress during a practice session.
+
+- **Streak** grows when a note is solved in one or two tries.
+- **Accuracy** compares correct solves against missed guesses.
+- **Misses** shows how many incorrect guesses happened in the session.
+- **Rank** starts at **Beginner** and can rise through **Listener**, **Detective**, **Virtuoso**, and **Mozart**.
+
+Progress is not saved permanently yet. Closing or refreshing the page starts a new session.
 
 ## How to Run
 

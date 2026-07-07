@@ -31,12 +31,17 @@ const practiceScreen = document.querySelector("#practice-screen");
 const startPracticeButton = document.querySelector("#start-practice");
 const backToMenuButton = document.querySelector("#back-to-menu");
 const practiceSummary = document.querySelector("#practice-summary");
+const rankLabel = document.querySelector("#rank-label");
+const streakCount = document.querySelector("#streak-count");
+const accuracyRate = document.querySelector("#accuracy-rate");
+const missCount = document.querySelector("#miss-count");
 const settingOptions = document.querySelectorAll(".setting-option");
 
 const settings = {
   instrument: "piano",
   mode: "single-note",
-  difficulty: "beginner"
+  difficulty: "beginner",
+  streakTarget: "5"
 };
 
 const settingLabels = {
@@ -50,8 +55,20 @@ const settingLabels = {
   difficulty: {
     beginner: "Beginner",
     intermediate: "Intermediate"
+  },
+  streakTarget: {
+    5: "5 Streak",
+    10: "10 Streak"
   }
 };
+
+const rankLevels = [
+  { name: "Beginner", minSolved: 0, minAccuracy: 0, minBestStreak: 0 },
+  { name: "Listener", minSolved: 3, minAccuracy: 60, minBestStreak: 2 },
+  { name: "Detective", minSolved: 6, minAccuracy: 75, minBestStreak: 3 },
+  { name: "Virtuoso", minSolved: 10, minAccuracy: 85, minBestStreak: 5 },
+  { name: "Mozart", minSolved: 20, minAccuracy: 90, minBestStreak: 10 }
+];
 
 let audioContext;
 let mysteryNoteIndex = chooseRandomNoteIndex();
@@ -61,6 +78,18 @@ let movementStep = 0;
 let pitchMovementPhase = "choose-start";
 let hasPlayedMysteryNote = false;
 let lastGuessIndex = null;
+let sessionStats = createFreshSessionStats();
+
+function createFreshSessionStats() {
+  return {
+    solved: 0,
+    misses: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    rankIndex: 0,
+    roundMisses: 0
+  };
+}
 
 function getActiveNoteIndexes() {
   if (settings.difficulty === "beginner") {
@@ -165,7 +194,10 @@ function playFrequency(frequency) {
 }
 
 function showSuccessMoment(noteLabel) {
-  const successMessage = "You got it!";
+  const streakTarget = Number(settings.streakTarget);
+  const successMessage = sessionStats.currentStreak >= streakTarget
+    ? "Take a bow!"
+    : "You got it!";
 
   successTitle.textContent = "";
 
@@ -177,7 +209,7 @@ function showSuccessMoment(noteLabel) {
     successTitle.appendChild(letterSpan);
   });
 
-  successNote.textContent = `Solved note: ${noteLabel}`;
+  successNote.textContent = `Note ${noteLabel} - Streak ${sessionStats.currentStreak}/${streakTarget}`;
   successMoment.classList.remove("hidden");
 }
 
@@ -244,15 +276,85 @@ function playLastGuess() {
   playFrequency(notes[lastGuessIndex].frequency);
 }
 
+function getSessionAccuracy() {
+  const totalAttempts = sessionStats.solved + sessionStats.misses;
+
+  if (totalAttempts === 0) {
+    return 100;
+  }
+
+  return Math.round((sessionStats.solved / totalAttempts) * 100);
+}
+
+function updateRank() {
+  const accuracy = getSessionAccuracy();
+
+  rankLevels.forEach((rank, index) => {
+    const qualifiesForRank = sessionStats.solved >= rank.minSolved
+      && accuracy >= rank.minAccuracy
+      && sessionStats.bestStreak >= rank.minBestStreak;
+
+    if (qualifiesForRank && index > sessionStats.rankIndex) {
+      sessionStats.rankIndex = index;
+    }
+  });
+}
+
+function updateSessionPanel() {
+  const streakTarget = Number(settings.streakTarget);
+
+  rankLabel.textContent = rankLevels[sessionStats.rankIndex].name;
+  streakCount.textContent = `${sessionStats.currentStreak} / ${streakTarget}`;
+  accuracyRate.textContent = `${getSessionAccuracy()}%`;
+  missCount.textContent = sessionStats.misses;
+}
+
+function getSolveMessage() {
+  if (sessionStats.roundMisses === 0) {
+    return "Clean solve";
+  }
+
+  if (sessionStats.roundMisses === 1) {
+    return "Strong recovery";
+  }
+
+  return "Solved";
+}
+
+function recordCorrectAnswer() {
+  const solvedInTwoTriesOrLess = sessionStats.roundMisses <= 1;
+
+  sessionStats.solved += 1;
+
+  if (solvedInTwoTriesOrLess) {
+    sessionStats.currentStreak += 1;
+  } else {
+    sessionStats.currentStreak = 0;
+  }
+
+  sessionStats.bestStreak = Math.max(sessionStats.bestStreak, sessionStats.currentStreak);
+  updateRank();
+  updateSessionPanel();
+}
+
+function recordMiss() {
+  sessionStats.misses += 1;
+  sessionStats.roundMisses += 1;
+  updateSessionPanel();
+}
+
 function updatePracticeSummary() {
   const instrument = settingLabels.instrument[settings.instrument];
   const mode = settingLabels.mode[settings.mode];
   const difficulty = settingLabels.difficulty[settings.difficulty];
+  const challenge = settingLabels.streakTarget[settings.streakTarget];
 
-  practiceSummary.textContent = `${instrument} - ${mode} - ${difficulty}`;
+  practiceSummary.textContent = `${instrument} - ${mode} - ${difficulty} - ${challenge}`;
 }
 
 function resetPracticeRound() {
+  sessionStats.roundMisses = 0;
+
   if (settings.mode === "pitch-movement") {
     startNoteLabel = chooseStartNoteLabel();
     startNoteIndex = getActiveNoteIndexes().find((index) => notes[index].label === startNoteLabel);
@@ -272,6 +374,7 @@ function resetPracticeRound() {
   hideListeningTools();
   updateKeyboardAvailability();
   updateModeText();
+  updateSessionPanel();
   showFeedback("Ready when you are.", "");
 }
 
@@ -282,7 +385,9 @@ function showMenu() {
 }
 
 function startPractice() {
+  sessionStats = createFreshSessionStats();
   updatePracticeSummary();
+  updateSessionPanel();
   resetPracticeRound();
   menuScreen.classList.add("hidden");
   practiceScreen.classList.remove("hidden");
@@ -301,6 +406,8 @@ function handleSettingChoice(option) {
     settingOption.setAttribute("aria-pressed", String(isSelected));
   });
 
+  updatePracticeSummary();
+  updateSessionPanel();
   resetPracticeRound();
 }
 
@@ -314,6 +421,7 @@ function handleGuess(guessedNoteIndex) {
 
   if (settings.mode === "pitch-movement" && pitchMovementPhase === "choose-start") {
     if (notes[guessedNoteIndex].label !== startNoteLabel) {
+      recordMiss();
       showFeedback(`Find ${startNoteLabel} first.`, "hint");
       return;
     }
@@ -330,7 +438,12 @@ function handleGuess(guessedNoteIndex) {
   }
 
   if (guessedNoteIndex === mysteryNoteIndex) {
-    showFeedback(`Correct - ${notes[mysteryNoteIndex].label}`, "correct", notes[mysteryNoteIndex].label);
+    const solvedNoteLabel = notes[mysteryNoteIndex].label;
+    const solveMessage = getSolveMessage();
+
+    recordCorrectAnswer();
+    showFeedback(solveMessage, "correct", solvedNoteLabel);
+
     if (settings.mode === "pitch-movement") {
       startNoteLabel = chooseStartNoteLabel();
       startNoteIndex = getActiveNoteIndexes().find((index) => notes[index].label === startNoteLabel);
@@ -349,9 +462,11 @@ function handleGuess(guessedNoteIndex) {
     playButton.disabled = false;
     hideListeningTools();
     updateModeText();
+    sessionStats.roundMisses = 0;
     return;
   }
 
+  recordMiss();
   lastGuessIndex = guessedNoteIndex;
   showCompareTools();
 
