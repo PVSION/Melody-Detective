@@ -42,6 +42,28 @@
                 <span>Pitch Movement</span>
               </button>
             </div>
+
+            <div id="challenge-settings" class="mode-challenge">
+              <p class="setting-label">Find One Note Challenge</p>
+              <div class="challenge-row">
+                <button class="setting-option selected" type="button" data-setting="streakTarget" data-value="5" aria-pressed="true">
+                  <span class="option-icon" aria-hidden="true">5</span>
+                  <span>Streak</span>
+                </button>
+                <button class="setting-option" type="button" data-setting="streakTarget" data-value="10" aria-pressed="false">
+                  <span class="option-icon" aria-hidden="true">10</span>
+                  <span>Streak</span>
+                </button>
+                <button class="setting-option" type="button" data-setting="streakTarget" data-value="20" aria-pressed="false">
+                  <span class="option-icon" aria-hidden="true">20</span>
+                  <span>Streak</span>
+                </button>
+                <button class="setting-option" type="button" data-setting="streakTarget" data-value="30" aria-pressed="false">
+                  <span class="option-icon" aria-hidden="true">30</span>
+                  <span>Streak</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           <div class="setting-group">
@@ -54,28 +76,6 @@
               <button class="setting-option" type="button" data-setting="difficulty" data-value="intermediate" aria-pressed="false">
                 <span class="option-icon" aria-hidden="true">2</span>
                 <span>Intermediate</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="setting-group">
-            <p class="setting-label">Challenge</p>
-            <div class="option-row">
-              <button class="setting-option selected" type="button" data-setting="streakTarget" data-value="5" aria-pressed="true">
-                <span class="option-icon" aria-hidden="true">5</span>
-                <span>Streak</span>
-              </button>
-              <button class="setting-option" type="button" data-setting="streakTarget" data-value="10" aria-pressed="false">
-                <span class="option-icon" aria-hidden="true">10</span>
-                <span>Streak</span>
-              </button>
-              <button class="setting-option" type="button" data-setting="streakTarget" data-value="20" aria-pressed="false">
-                <span class="option-icon" aria-hidden="true">20</span>
-                <span>Streak</span>
-              </button>
-              <button class="setting-option" type="button" data-setting="streakTarget" data-value="30" aria-pressed="false">
-                <span class="option-icon" aria-hidden="true">30</span>
-                <span>Streak</span>
               </button>
             </div>
           </div>
@@ -144,12 +144,14 @@
           </div>
 
           <div id="challenge-complete" class="challenge-complete hidden" role="status" aria-live="polite">
-            <p class="success-kicker">Challenge complete</p>
-            <h2>Take a bow.</h2>
-            <p id="challenge-complete-copy">You reached your streak goal.</p>
-            <div class="challenge-actions">
-              <button id="aim-higher" class="play-button" type="button">Aim Higher</button>
-              <button id="continue-challenge" class="secondary-button" type="button">Continue Current Challenge</button>
+            <div class="challenge-dialog">
+              <p class="success-kicker">Challenge complete</p>
+              <h2>Take a bow.</h2>
+              <p id="challenge-complete-copy">You reached your streak goal.</p>
+              <div class="challenge-actions">
+                <button id="aim-higher" class="play-button" type="button">Aim Higher</button>
+                <button id="continue-challenge" class="secondary-button" type="button">Continue Current Challenge</button>
+              </div>
             </div>
           </div>
         </div>

@@ -24,10 +24,10 @@ Version 0.1 has one puzzle:
 
 1. Choose the current practice setup from the start menu.
    - **Find One Note** asks you to match one mystery note.
+   - **Find One Note Challenge** lets you choose a 5-streak, 10-streak, 20-streak, or 30-streak goal before practice starts.
    - **Pitch Movement** asks you to tap a named starting note, then move up or down from there.
    - **Beginner** uses white keys only.
    - **Intermediate** includes black keys and larger pitch movements.
-   - **Challenge** lets you choose a 5-streak, 10-streak, 20-streak, or 30-streak goal.
 2. Press **Start Practice**.
 3. Press **Play Note**.
 4. Listen to the mystery note.
@@ -43,6 +43,7 @@ Version 0.1 has one puzzle:
 Melody Detective currently tracks progress during a practice session.
 
 - **Streak** grows only when a note is solved on the first try.
+- **Challenge completion** currently applies to **Find One Note** mode only.
 - **Strong recovery** still rewards finding the note after one miss, but it does not continue the streak.
 - **Accuracy** compares correct solves against missed guesses.
 - **Attempts** shows the total number of correct solves and missed guesses in the session.

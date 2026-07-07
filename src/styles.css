@@ -88,6 +88,7 @@ h1 {
 .compare-tools.hidden,
 .movement-command.hidden,
 .play-button.hidden,
+.mode-challenge.hidden,
 .challenge-complete.hidden {
   display: none;
 }
@@ -156,7 +157,7 @@ h2 {
 .settings-grid {
   width: min(980px, 100%);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 0.85fr 1.6fr 1fr;
   gap: clamp(14px, 2vw, 20px);
   z-index: 1;
 }
@@ -171,6 +172,20 @@ h2 {
 .option-row {
   display: grid;
   grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.mode-challenge {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.challenge-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -481,82 +496,23 @@ h2 {
   animation: overlayFade 220ms ease both;
 }
 
-.challenge-complete::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent, rgba(4, 7, 12, 0.18));
-  pointer-events: none;
-}
-
-.challenge-complete > * {
-  position: relative;
-  z-index: 1;
-}
-
-.challenge-complete {
-  text-align: center;
-}
-
-.challenge-complete .success-kicker,
-.challenge-complete h2,
-.challenge-complete p,
-.challenge-actions {
+.challenge-dialog {
   width: min(560px, 100%);
-}
-
-.challenge-complete .success-kicker,
-.challenge-complete h2,
-.challenge-complete p,
-.challenge-actions {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.challenge-complete h2,
-.challenge-complete p:not(.success-kicker),
-.challenge-actions {
-  padding-left: clamp(20px, 4vw, 34px);
-  padding-right: clamp(20px, 4vw, 34px);
-}
-
-.challenge-complete h2 {
-  padding-top: clamp(22px, 5vw, 36px);
-}
-
-.challenge-actions {
-  padding-bottom: clamp(22px, 5vw, 36px);
-}
-
-.challenge-complete .success-kicker {
-  padding-top: clamp(22px, 5vw, 34px);
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  border-left: 1px solid rgba(117, 189, 255, 0.34);
-  border-right: 1px solid rgba(117, 189, 255, 0.34);
-  border-radius: 26px 26px 0 0;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: clamp(26px, 5vw, 42px);
+  border: 1px solid rgba(117, 189, 255, 0.34);
+  border-radius: 28px;
   background:
     linear-gradient(135deg, rgba(74, 163, 255, 0.2), rgba(89, 217, 142, 0.12)),
     rgba(20, 26, 34, 0.94);
-  box-shadow: 0 -10px 44px rgba(0, 0, 0, 0.24);
-}
-
-.challenge-complete h2,
-.challenge-complete p:not(.success-kicker),
-.challenge-actions {
-  border-left: 1px solid rgba(117, 189, 255, 0.34);
-  border-right: 1px solid rgba(117, 189, 255, 0.34);
-  background:
-    linear-gradient(135deg, rgba(74, 163, 255, 0.2), rgba(89, 217, 142, 0.12)),
-    rgba(20, 26, 34, 0.94);
-}
-
-.challenge-actions {
-  border-bottom: 1px solid rgba(117, 189, 255, 0.34);
-  border-radius: 0 0 26px 26px;
   box-shadow:
     0 28px 70px rgba(0, 0, 0, 0.52),
     0 0 70px rgba(74, 163, 255, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  text-align: center;
+  animation: successRise 420ms ease both;
 }
 
 .challenge-complete h2,
@@ -578,7 +534,7 @@ h2 {
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  padding-top: 24px;
+  padding-top: 10px;
 }
 
 .piano-shell {

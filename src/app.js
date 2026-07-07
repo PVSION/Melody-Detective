@@ -35,6 +35,7 @@ const practiceScreen = document.querySelector("#practice-screen");
 const startPracticeButton = document.querySelector("#start-practice");
 const backToMenuButton = document.querySelector("#back-to-menu");
 const practiceSummary = document.querySelector("#practice-summary");
+const challengeSettings = document.querySelector("#challenge-settings");
 const rankLabel = document.querySelector("#rank-label");
 const streakCount = document.querySelector("#streak-count");
 const accuracyRate = document.querySelector("#accuracy-rate");
@@ -89,6 +90,10 @@ let hasPlayedMysteryNote = false;
 let lastGuessIndex = null;
 let sessionStats = createFreshSessionStats();
 let challengeFinished = false;
+
+function isStreakChallengeMode() {
+  return settings.mode === "single-note";
+}
 
 function createFreshSessionStats() {
   return {
@@ -205,7 +210,7 @@ function playFrequency(frequency) {
 
 function showSuccessMoment(noteLabel) {
   const streakTarget = Number(settings.streakTarget);
-  const successMessage = sessionStats.currentStreak >= streakTarget
+  const successMessage = isStreakChallengeMode() && sessionStats.currentStreak >= streakTarget
     ? "Take a bow!"
     : "You got it!";
 
@@ -219,7 +224,9 @@ function showSuccessMoment(noteLabel) {
     successTitle.appendChild(letterSpan);
   });
 
-  successNote.textContent = `Note ${noteLabel} - Streak ${sessionStats.currentStreak}/${streakTarget}`;
+  successNote.textContent = isStreakChallengeMode()
+    ? `Note ${noteLabel} - Streak ${sessionStats.currentStreak}/${streakTarget}`
+    : `Note ${noteLabel}`;
   successMoment.classList.remove("hidden");
 }
 
@@ -328,7 +335,9 @@ function updateSessionPanel() {
   const streakTarget = Number(settings.streakTarget);
 
   rankLabel.textContent = rankLevels[sessionStats.rankIndex].name;
-  streakCount.textContent = `${sessionStats.currentStreak} / ${streakTarget}`;
+  streakCount.textContent = isStreakChallengeMode()
+    ? `${sessionStats.currentStreak} / ${streakTarget}`
+    : sessionStats.currentStreak;
   accuracyRate.textContent = `${getSessionAccuracy()}%`;
   attemptCount.textContent = getSessionAttempts();
   missCount.textContent = sessionStats.misses;
@@ -372,6 +381,10 @@ function recordMiss() {
 function completeChallenge() {
   const streakTarget = Number(settings.streakTarget);
 
+  if (!isStreakChallengeMode()) {
+    return;
+  }
+
   challengeFinished = true;
   hideSuccessMoment();
   hideListeningTools();
@@ -407,13 +420,19 @@ function chooseNextStreakTarget() {
   });
 }
 
+function updateChallengeSettingsVisibility() {
+  challengeSettings.classList.toggle("hidden", !isStreakChallengeMode());
+}
+
 function updatePracticeSummary() {
   const instrument = settingLabels.instrument[settings.instrument];
   const mode = settingLabels.mode[settings.mode];
   const difficulty = settingLabels.difficulty[settings.difficulty];
   const challenge = settingLabels.streakTarget[settings.streakTarget];
 
-  practiceSummary.textContent = `${instrument} - ${mode} - ${difficulty} - ${challenge}`;
+  practiceSummary.textContent = isStreakChallengeMode()
+    ? `${instrument} - ${mode} - ${difficulty} - ${challenge}`
+    : `${instrument} - ${mode} - ${difficulty}`;
 }
 
 function resetPracticeRound() {
@@ -470,6 +489,7 @@ function handleSettingChoice(option) {
 
   updatePracticeSummary();
   updateSessionPanel();
+  updateChallengeSettingsVisibility();
   resetPracticeRound();
 }
 
@@ -511,7 +531,7 @@ function handleGuess(guessedNoteIndex) {
     recordCorrectAnswer();
     showFeedback(solveMessage, "correct", solvedNoteLabel);
 
-    if (sessionStats.currentStreak >= Number(settings.streakTarget)) {
+    if (isStreakChallengeMode() && sessionStats.currentStreak >= Number(settings.streakTarget)) {
       completeChallenge();
       return;
     }
@@ -620,4 +640,5 @@ settingOptions.forEach((option) => {
 createKeyboard();
 updateKeyboardAvailability();
 updatePracticeSummary();
+updateChallengeSettingsVisibility();
 updateModeText();
