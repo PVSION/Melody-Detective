@@ -373,8 +373,11 @@ function completeChallenge() {
   const streakTarget = Number(settings.streakTarget);
 
   challengeFinished = true;
+  hideSuccessMoment();
   hideListeningTools();
   playButton.disabled = true;
+  feedback.textContent = "Challenge complete";
+  feedback.className = "feedback correct";
   challengeCompleteCopy.textContent = `You reached ${streakTarget} clean answers in a row.`;
   challengeComplete.classList.remove("hidden");
   updateModeText();
