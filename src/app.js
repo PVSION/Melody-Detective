@@ -54,6 +54,7 @@ let audioContext;
 let mysteryNoteIndex = chooseRandomNoteIndex();
 let startNoteIndex = mysteryNoteIndex;
 let movementStep = 0;
+let pitchMovementPhase = "choose-start";
 let hasPlayedMysteryNote = false;
 let lastGuessIndex = null;
 
@@ -139,8 +140,10 @@ function showFeedback(message, type) {
 
 function updateModeText() {
   if (settings.mode === "pitch-movement") {
-    instructions.textContent = "Listen to the starting note, follow the movement command, then tap the destination key.";
-    movementCommand.textContent = describeMovement(movementStep);
+    instructions.textContent = "Find the starting note on the piano. Then follow the movement command.";
+    movementCommand.textContent = pitchMovementPhase === "choose-start"
+      ? `Start at ${notes[startNoteIndex].name}`
+      : describeMovement(movementStep);
     movementCommand.classList.remove("hidden");
     playButton.textContent = "Play Starting Note";
     replayNoteButton.textContent = "Replay Starting Note";
@@ -197,10 +200,12 @@ function resetPracticeRound() {
     startNoteIndex = challenge.startIndex;
     movementStep = challenge.semitoneDistance;
     mysteryNoteIndex = challenge.targetIndex;
+    pitchMovementPhase = "choose-start";
   } else {
     mysteryNoteIndex = chooseRandomNoteIndex();
     startNoteIndex = mysteryNoteIndex;
     movementStep = 0;
+    pitchMovementPhase = "choose-start";
   }
 
   hasPlayedMysteryNote = false;
@@ -248,6 +253,26 @@ function handleGuess(guessedNoteIndex) {
 
   playFrequency(notes[guessedNoteIndex].frequency);
 
+  if (settings.mode === "pitch-movement" && pitchMovementPhase === "choose-start") {
+    if (guessedNoteIndex === startNoteIndex) {
+      pitchMovementPhase = "choose-destination";
+      updateModeText();
+      showFeedback("Starting note found. Now move from there.", "");
+      return;
+    }
+
+    lastGuessIndex = guessedNoteIndex;
+    showCompareTools();
+
+    if (guessedNoteIndex > startNoteIndex) {
+      showFeedback("Too High", "hint");
+    } else {
+      showFeedback("Too Low", "hint");
+    }
+
+    return;
+  }
+
   if (guessedNoteIndex === mysteryNoteIndex) {
     showFeedback(`Correct - ${notes[mysteryNoteIndex].name}`, "correct");
     if (settings.mode === "pitch-movement") {
@@ -256,10 +281,12 @@ function handleGuess(guessedNoteIndex) {
       startNoteIndex = challenge.startIndex;
       movementStep = challenge.semitoneDistance;
       mysteryNoteIndex = challenge.targetIndex;
+      pitchMovementPhase = "choose-start";
     } else {
       mysteryNoteIndex = chooseRandomNoteIndex();
       startNoteIndex = mysteryNoteIndex;
       movementStep = 0;
+      pitchMovementPhase = "choose-start";
     }
 
     hasPlayedMysteryNote = false;

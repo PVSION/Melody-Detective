@@ -6,7 +6,7 @@ Version 0.1 has one puzzle:
 
 1. Choose the current practice setup from the start menu.
    - **Find One Note** asks you to match one mystery note.
-   - **Pitch Movement** asks you to move up or down from a starting note.
+   - **Pitch Movement** asks you to find a named starting note, then move up or down from there.
    - **Beginner** uses white keys only.
    - **Intermediate** includes black keys.
 2. Press **Start Practice**.
