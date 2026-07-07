@@ -53,6 +53,7 @@ const settingLabels = {
 let audioContext;
 let mysteryNoteIndex = chooseRandomNoteIndex();
 let startNoteIndex = mysteryNoteIndex;
+let startNoteLabel = notes[startNoteIndex].label;
 let movementStep = 0;
 let pitchMovementPhase = "choose-start";
 let hasPlayedMysteryNote = false;
@@ -99,6 +100,39 @@ function chooseMovementChallenge() {
   return possibleChallenges[Math.floor(Math.random() * possibleChallenges.length)];
 }
 
+function getMovementChallengesForStart(startIndex) {
+  const activeNoteIndexes = getActiveNoteIndexes();
+  const movementOptions = [-2, -1, 1, 2];
+
+  return movementOptions
+    .map((indexOffset) => {
+      const targetIndex = startIndex + indexOffset;
+
+      return {
+        startIndex,
+        indexOffset,
+        targetIndex,
+        semitoneDistance: targetIndex - startIndex
+      };
+    })
+    .filter((challenge) => activeNoteIndexes.includes(challenge.targetIndex));
+}
+
+function chooseMovementChallengeForStart(startIndex) {
+  const possibleChallenges = getMovementChallengesForStart(startIndex);
+
+  return possibleChallenges[Math.floor(Math.random() * possibleChallenges.length)];
+}
+
+function chooseStartNoteLabel() {
+  const usableLabels = getActiveNoteIndexes()
+    .filter((startIndex) => getMovementChallengesForStart(startIndex).length > 0)
+    .map((startIndex) => notes[startIndex].label);
+  const uniqueLabels = [...new Set(usableLabels)];
+
+  return uniqueLabels[Math.floor(Math.random() * uniqueLabels.length)];
+}
+
 function describeMovement(step) {
   const direction = step > 0 ? "up" : "down";
   const distance = Math.abs(step) === 1 ? "a half step" : "a whole step";
@@ -140,18 +174,19 @@ function showFeedback(message, type) {
 
 function updateModeText() {
   if (settings.mode === "pitch-movement") {
-    instructions.textContent = "Find the starting note on the piano. Then follow the movement command.";
+    instructions.textContent = "Tap the starting note on the piano. Then follow the movement command.";
     movementCommand.textContent = pitchMovementPhase === "choose-start"
-      ? `Start at ${notes[startNoteIndex].label}`
+      ? `Start at ${startNoteLabel}`
       : describeMovement(movementStep);
     movementCommand.classList.remove("hidden");
-    playButton.textContent = "Play Starting Note";
+    playButton.classList.add("hidden");
     replayNoteButton.textContent = "Replay Starting Note";
     return;
   }
 
   instructions.textContent = "Press Play Note, listen carefully, then tap the piano key that matches the mystery note.";
   movementCommand.classList.add("hidden");
+  playButton.classList.remove("hidden");
   playButton.textContent = "Play Note";
   replayNoteButton.textContent = "Replay Note";
 }
@@ -195,15 +230,15 @@ function updatePracticeSummary() {
 
 function resetPracticeRound() {
   if (settings.mode === "pitch-movement") {
-    const challenge = chooseMovementChallenge();
-
-    startNoteIndex = challenge.startIndex;
-    movementStep = challenge.semitoneDistance;
-    mysteryNoteIndex = challenge.targetIndex;
+    startNoteLabel = chooseStartNoteLabel();
+    startNoteIndex = getActiveNoteIndexes().find((index) => notes[index].label === startNoteLabel);
+    movementStep = 0;
+    mysteryNoteIndex = startNoteIndex;
     pitchMovementPhase = "choose-start";
   } else {
     mysteryNoteIndex = chooseRandomNoteIndex();
     startNoteIndex = mysteryNoteIndex;
+    startNoteLabel = notes[startNoteIndex].label;
     movementStep = 0;
     pitchMovementPhase = "choose-start";
   }
@@ -246,7 +281,7 @@ function handleSettingChoice(option) {
 }
 
 function handleGuess(guessedNoteIndex) {
-  if (!hasPlayedMysteryNote) {
+  if (settings.mode !== "pitch-movement" && !hasPlayedMysteryNote) {
     showFeedback("Press Play Note first.", "");
     return;
   }
@@ -254,37 +289,34 @@ function handleGuess(guessedNoteIndex) {
   playFrequency(notes[guessedNoteIndex].frequency);
 
   if (settings.mode === "pitch-movement" && pitchMovementPhase === "choose-start") {
-    if (guessedNoteIndex === startNoteIndex) {
-      pitchMovementPhase = "choose-destination";
-      updateModeText();
-      showFeedback("Starting note found. Now move from there.", "");
+    if (notes[guessedNoteIndex].label !== startNoteLabel) {
+      showFeedback(`Find ${startNoteLabel} first.`, "hint");
       return;
     }
 
-    lastGuessIndex = guessedNoteIndex;
-    showCompareTools();
+    const challenge = chooseMovementChallengeForStart(guessedNoteIndex);
 
-    if (guessedNoteIndex > startNoteIndex) {
-      showFeedback("Too High", "hint");
-    } else {
-      showFeedback("Too Low", "hint");
-    }
-
+    startNoteIndex = guessedNoteIndex;
+    movementStep = challenge.semitoneDistance;
+    mysteryNoteIndex = challenge.targetIndex;
+    pitchMovementPhase = "choose-destination";
+    updateModeText();
+    showFeedback("Starting note found. Now move from there.", "");
     return;
   }
 
   if (guessedNoteIndex === mysteryNoteIndex) {
     showFeedback(`Correct - ${notes[mysteryNoteIndex].label}`, "correct");
     if (settings.mode === "pitch-movement") {
-      const challenge = chooseMovementChallenge();
-
-      startNoteIndex = challenge.startIndex;
-      movementStep = challenge.semitoneDistance;
-      mysteryNoteIndex = challenge.targetIndex;
+      startNoteLabel = chooseStartNoteLabel();
+      startNoteIndex = getActiveNoteIndexes().find((index) => notes[index].label === startNoteLabel);
+      movementStep = 0;
+      mysteryNoteIndex = startNoteIndex;
       pitchMovementPhase = "choose-start";
     } else {
       mysteryNoteIndex = chooseRandomNoteIndex();
       startNoteIndex = mysteryNoteIndex;
+      startNoteLabel = notes[startNoteIndex].label;
       movementStep = 0;
       pitchMovementPhase = "choose-start";
     }

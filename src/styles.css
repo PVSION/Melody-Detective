@@ -86,7 +86,8 @@ h1 {
 .screen.hidden,
 .listening-tools.hidden,
 .compare-tools.hidden,
-.movement-command.hidden {
+.movement-command.hidden,
+.play-button.hidden {
   display: none;
 }
 
