@@ -42,28 +42,6 @@
                 <span>Pitch Movement</span>
               </button>
             </div>
-
-            <div id="challenge-settings" class="mode-challenge">
-              <p class="setting-label">Find One Note Challenge</p>
-              <div class="challenge-row">
-                <button class="setting-option selected" type="button" data-setting="streakTarget" data-value="5" aria-pressed="true">
-                  <span class="option-icon" aria-hidden="true">5</span>
-                  <span>Streak</span>
-                </button>
-                <button class="setting-option" type="button" data-setting="streakTarget" data-value="10" aria-pressed="false">
-                  <span class="option-icon" aria-hidden="true">10</span>
-                  <span>Streak</span>
-                </button>
-                <button class="setting-option" type="button" data-setting="streakTarget" data-value="20" aria-pressed="false">
-                  <span class="option-icon" aria-hidden="true">20</span>
-                  <span>Streak</span>
-                </button>
-                <button class="setting-option" type="button" data-setting="streakTarget" data-value="30" aria-pressed="false">
-                  <span class="option-icon" aria-hidden="true">30</span>
-                  <span>Streak</span>
-                </button>
-              </div>
-            </div>
           </div>
 
           <div class="setting-group">
@@ -82,6 +60,36 @@
         </div>
 
         <button id="start-practice" class="play-button" type="button">Start Practice</button>
+      </section>
+
+      <section id="challenge-screen" class="menu-card challenge-card screen hidden" aria-label="Find One Note challenge setup">
+        <div class="menu-intro">
+          <h2>Choose Challenge</h2>
+        </div>
+
+        <div class="challenge-grid" aria-label="Find One Note streak challenge">
+          <button class="setting-option selected" type="button" data-setting="streakTarget" data-value="5" aria-pressed="true">
+            <span class="option-icon" aria-hidden="true">5</span>
+            <span>Streak</span>
+          </button>
+          <button class="setting-option" type="button" data-setting="streakTarget" data-value="10" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">10</span>
+            <span>Streak</span>
+          </button>
+          <button class="setting-option" type="button" data-setting="streakTarget" data-value="20" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">20</span>
+            <span>Streak</span>
+          </button>
+          <button class="setting-option" type="button" data-setting="streakTarget" data-value="30" aria-pressed="false">
+            <span class="option-icon" aria-hidden="true">30</span>
+            <span>Streak</span>
+          </button>
+        </div>
+
+        <div class="challenge-nav">
+          <button id="back-to-start" class="secondary-button" type="button">Back</button>
+          <button id="start-selected-challenge" class="play-button" type="button">Start Challenge</button>
+        </div>
       </section>
 
       <section id="practice-screen" class="screen hidden" aria-label="Piano practice">

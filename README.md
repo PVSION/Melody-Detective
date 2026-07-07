@@ -24,19 +24,19 @@ Version 0.1 has one puzzle:
 
 1. Choose the current practice setup from the start menu.
    - **Find One Note** asks you to match one mystery note.
-   - **Find One Note Challenge** lets you choose a 5-streak, 10-streak, 20-streak, or 30-streak goal before practice starts.
    - **Pitch Movement** asks you to tap a named starting note, then move up or down from there.
    - **Beginner** uses white keys only.
    - **Intermediate** includes black keys and larger pitch movements.
-2. Press **Start Practice**.
-3. Press **Play Note**.
-4. Listen to the mystery note.
-5. Replay the mystery note if you need to hear it again.
-6. Click the matching key on the virtual piano.
-7. The app tells you when you are correct or gives a subtle direction cue.
-8. After a wrong guess, compare the mystery note with your guess.
-9. Build your streak and session rank by solving notes without missing.
-10. When you reach your streak goal, choose whether to aim higher or continue the current challenge.
+2. If you choose **Find One Note**, choose a 5-streak, 10-streak, 20-streak, or 30-streak challenge.
+3. Press **Start Practice** or **Start Challenge**.
+4. Press **Play Note**.
+5. Listen to the mystery note.
+6. Replay the mystery note if you need to hear it again.
+7. Click the matching key on the virtual piano.
+8. The app tells you when you are correct or gives a subtle direction cue.
+9. After a wrong guess, compare the mystery note with your guess.
+10. Build your streak and session rank by solving notes without missing.
+11. When you reach your streak goal, choose whether to aim higher or continue the current challenge.
 
 ## Session Progress
 

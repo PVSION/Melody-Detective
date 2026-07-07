@@ -31,11 +31,13 @@ const compareTools = document.querySelector("#compare-tools");
 const replayNoteButton = document.querySelector("#replay-note");
 const playYourGuessButton = document.querySelector("#play-your-guess");
 const menuScreen = document.querySelector("#menu-screen");
+const challengeScreen = document.querySelector("#challenge-screen");
 const practiceScreen = document.querySelector("#practice-screen");
 const startPracticeButton = document.querySelector("#start-practice");
+const startSelectedChallengeButton = document.querySelector("#start-selected-challenge");
+const backToStartButton = document.querySelector("#back-to-start");
 const backToMenuButton = document.querySelector("#back-to-menu");
 const practiceSummary = document.querySelector("#practice-summary");
-const challengeSettings = document.querySelector("#challenge-settings");
 const rankLabel = document.querySelector("#rank-label");
 const streakCount = document.querySelector("#streak-count");
 const accuracyRate = document.querySelector("#accuracy-rate");
@@ -420,10 +422,6 @@ function chooseNextStreakTarget() {
   });
 }
 
-function updateChallengeSettingsVisibility() {
-  challengeSettings.classList.toggle("hidden", !isStreakChallengeMode());
-}
-
 function updatePracticeSummary() {
   const instrument = settingLabels.instrument[settings.instrument];
   const mode = settingLabels.mode[settings.mode];
@@ -433,6 +431,12 @@ function updatePracticeSummary() {
   practiceSummary.textContent = isStreakChallengeMode()
     ? `${instrument} - ${mode} - ${difficulty} - ${challenge}`
     : `${instrument} - ${mode} - ${difficulty}`;
+}
+
+function updateStartButtonText() {
+  startPracticeButton.textContent = isStreakChallengeMode()
+    ? "Choose Challenge"
+    : "Start Practice";
 }
 
 function resetPracticeRound() {
@@ -463,13 +467,29 @@ function resetPracticeRound() {
 }
 
 function showMenu() {
+  challengeScreen.classList.add("hidden");
   practiceScreen.classList.add("hidden");
   menuScreen.classList.remove("hidden");
   resetPracticeRound();
 }
 
+function showChallengeScreen() {
+  menuScreen.classList.add("hidden");
+  challengeScreen.classList.remove("hidden");
+}
+
+function handleStartPractice() {
+  if (isStreakChallengeMode()) {
+    showChallengeScreen();
+    return;
+  }
+
+  startPractice();
+}
+
 function startPractice() {
   startFreshSession();
+  challengeScreen.classList.add("hidden");
   menuScreen.classList.add("hidden");
   practiceScreen.classList.remove("hidden");
 }
@@ -489,7 +509,7 @@ function handleSettingChoice(option) {
 
   updatePracticeSummary();
   updateSessionPanel();
-  updateChallengeSettingsVisibility();
+  updateStartButtonText();
   resetPracticeRound();
 }
 
@@ -625,7 +645,9 @@ playButton.addEventListener("click", () => {
 
 replayNoteButton.addEventListener("click", playMysteryNote);
 playYourGuessButton.addEventListener("click", playLastGuess);
-startPracticeButton.addEventListener("click", startPractice);
+startPracticeButton.addEventListener("click", handleStartPractice);
+startSelectedChallengeButton.addEventListener("click", startPractice);
+backToStartButton.addEventListener("click", showMenu);
 backToMenuButton.addEventListener("click", showMenu);
 aimHigherButton.addEventListener("click", () => {
   chooseNextStreakTarget();
@@ -640,5 +662,5 @@ settingOptions.forEach((option) => {
 createKeyboard();
 updateKeyboardAvailability();
 updatePracticeSummary();
-updateChallengeSettingsVisibility();
+updateStartButtonText();
 updateModeText();
