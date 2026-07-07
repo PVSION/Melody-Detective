@@ -31,9 +31,14 @@
 
           <div class="setting-group">
             <p class="setting-label">Mode</p>
-            <button class="setting-option selected" type="button" data-setting="mode" data-value="single-note" aria-pressed="true">
-              Find One Note
-            </button>
+            <div class="option-row">
+              <button class="setting-option selected" type="button" data-setting="mode" data-value="single-note" aria-pressed="true">
+                Find One Note
+              </button>
+              <button class="setting-option" type="button" data-setting="mode" data-value="pitch-movement" aria-pressed="false">
+                Pitch Movement
+              </button>
+            </div>
           </div>
 
           <div class="setting-group">
@@ -59,9 +64,11 @@
         </div>
 
         <div class="game-card" aria-label="Melody Detective game">
-          <p class="instructions">
+          <p id="instructions" class="instructions">
             Press Play Note, listen carefully, then tap the piano key that matches the mystery note.
           </p>
+
+          <p id="movement-command" class="movement-command hidden"></p>
 
           <button id="play-note" class="play-button" type="button">Play Note</button>
 

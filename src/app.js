@@ -15,6 +15,8 @@ const notes = [
 ];
 
 const playButton = document.querySelector("#play-note");
+const instructions = document.querySelector("#instructions");
+const movementCommand = document.querySelector("#movement-command");
 const feedback = document.querySelector("#feedback");
 const keyboard = document.querySelector("#keyboard");
 const listeningTools = document.querySelector("#listening-tools");
@@ -39,7 +41,8 @@ const settingLabels = {
     piano: "Piano"
   },
   mode: {
-    "single-note": "Find One Note"
+    "single-note": "Find One Note",
+    "pitch-movement": "Pitch Movement"
   },
   difficulty: {
     beginner: "Beginner",
@@ -49,6 +52,8 @@ const settingLabels = {
 
 let audioContext;
 let mysteryNoteIndex = chooseRandomNoteIndex();
+let startNoteIndex = mysteryNoteIndex;
+let movementStep = 0;
 let hasPlayedMysteryNote = false;
 let lastGuessIndex = null;
 
@@ -68,6 +73,33 @@ function chooseRandomNoteIndex() {
   const randomIndex = Math.floor(Math.random() * activeNoteIndexes.length);
 
   return activeNoteIndexes[randomIndex];
+}
+
+function chooseMovementChallenge() {
+  const activeNoteIndexes = getActiveNoteIndexes();
+  const movementOptions = settings.difficulty === "beginner"
+    ? [-2, 2]
+    : [-2, -1, 1, 2];
+  const possibleChallenges = [];
+
+  activeNoteIndexes.forEach((startIndex) => {
+    movementOptions.forEach((step) => {
+      const targetIndex = startIndex + step;
+
+      if (activeNoteIndexes.includes(targetIndex)) {
+        possibleChallenges.push({ startIndex, step, targetIndex });
+      }
+    });
+  });
+
+  return possibleChallenges[Math.floor(Math.random() * possibleChallenges.length)];
+}
+
+function describeMovement(step) {
+  const direction = step > 0 ? "up" : "down";
+  const distance = Math.abs(step) === 1 ? "a half step" : "a whole step";
+
+  return `Go ${direction} ${distance}`;
 }
 
 function getAudioContext() {
@@ -102,6 +134,22 @@ function showFeedback(message, type) {
   feedback.className = `feedback ${type}`;
 }
 
+function updateModeText() {
+  if (settings.mode === "pitch-movement") {
+    instructions.textContent = "Listen to the starting note, follow the movement command, then tap the destination key.";
+    movementCommand.textContent = describeMovement(movementStep);
+    movementCommand.classList.remove("hidden");
+    playButton.textContent = "Play Starting Note";
+    replayNoteButton.textContent = "Replay Starting Note";
+    return;
+  }
+
+  instructions.textContent = "Press Play Note, listen carefully, then tap the piano key that matches the mystery note.";
+  movementCommand.classList.add("hidden");
+  playButton.textContent = "Play Note";
+  replayNoteButton.textContent = "Replay Note";
+}
+
 function hideListeningTools() {
   listeningTools.classList.add("hidden");
   compareTools.classList.add("hidden");
@@ -118,7 +166,9 @@ function showCompareTools() {
 }
 
 function playMysteryNote() {
-  playFrequency(notes[mysteryNoteIndex].frequency);
+  const noteToPlay = settings.mode === "pitch-movement" ? startNoteIndex : mysteryNoteIndex;
+
+  playFrequency(notes[noteToPlay].frequency);
 }
 
 function playLastGuess() {
@@ -138,11 +188,23 @@ function updatePracticeSummary() {
 }
 
 function resetPracticeRound() {
-  mysteryNoteIndex = chooseRandomNoteIndex();
+  if (settings.mode === "pitch-movement") {
+    const challenge = chooseMovementChallenge();
+
+    startNoteIndex = challenge.startIndex;
+    movementStep = challenge.step;
+    mysteryNoteIndex = challenge.targetIndex;
+  } else {
+    mysteryNoteIndex = chooseRandomNoteIndex();
+    startNoteIndex = mysteryNoteIndex;
+    movementStep = 0;
+  }
+
   hasPlayedMysteryNote = false;
   playButton.disabled = false;
   hideListeningTools();
   updateKeyboardAvailability();
+  updateModeText();
   showFeedback("Ready when you are.", "");
 }
 
@@ -185,10 +247,22 @@ function handleGuess(guessedNoteIndex) {
 
   if (guessedNoteIndex === mysteryNoteIndex) {
     showFeedback(`Correct - ${notes[mysteryNoteIndex].name}`, "correct");
-    mysteryNoteIndex = chooseRandomNoteIndex();
+    if (settings.mode === "pitch-movement") {
+      const challenge = chooseMovementChallenge();
+
+      startNoteIndex = challenge.startIndex;
+      movementStep = challenge.step;
+      mysteryNoteIndex = challenge.targetIndex;
+    } else {
+      mysteryNoteIndex = chooseRandomNoteIndex();
+      startNoteIndex = mysteryNoteIndex;
+      movementStep = 0;
+    }
+
     hasPlayedMysteryNote = false;
     playButton.disabled = false;
     hideListeningTools();
+    updateModeText();
     return;
   }
 
@@ -268,3 +342,4 @@ settingOptions.forEach((option) => {
 createKeyboard();
 updateKeyboardAvailability();
 updatePracticeSummary();
+updateModeText();
