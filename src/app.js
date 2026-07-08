@@ -20,7 +20,6 @@ const movementCommand = document.querySelector("#movement-command");
 const feedback = document.querySelector("#feedback");
 const successMoment = document.querySelector("#success-moment");
 const successTitle = document.querySelector(".success-title");
-const successNote = document.querySelector(".success-note");
 const challengeComplete = document.querySelector("#challenge-complete");
 const challengeCompleteCopy = document.querySelector("#challenge-complete-copy");
 const aimHigherButton = document.querySelector("#aim-higher");
@@ -74,6 +73,12 @@ const settingLabels = {
 };
 
 const streakTargets = [5, 10, 20, 30];
+
+const successMessages = {
+  clean: ["You got it!", "Nice ear.", "Locked in.", "Right on pitch.", "Found it."],
+  recovery: ["Good recovery.", "Nice correction.", "You adjusted well.", "Found your way back."],
+  solved: ["Case closed.", "Solved.", "Keep listening.", "You found it."]
+};
 
 const rankLevels = [
   { name: "Beginner", minSolved: 0, minAccuracy: 0, minBestStreak: 0 },
@@ -211,15 +216,37 @@ function playFrequency(frequency) {
   oscillator.stop(context.currentTime + 0.95);
 }
 
-function showSuccessMoment(noteLabel) {
-  const streakTarget = Number(settings.streakTarget);
-  const successMessage = isStreakChallengeMode() && sessionStats.currentStreak >= streakTarget
-    ? "Take a bow!"
-    : "You got it!";
+function chooseRandomMessage(messages) {
+  return messages[Math.floor(Math.random() * messages.length)];
+}
 
+function revealNoteOnKey(noteIndex) {
+  keyboard.querySelectorAll(".key.revealed").forEach((key) => {
+    key.classList.remove("revealed");
+    key.textContent = "";
+  });
+
+  const key = keyboard.querySelector(`[data-note-index="${noteIndex}"]`);
+
+  if (!key) {
+    return;
+  }
+
+  key.textContent = notes[noteIndex].label;
+  key.classList.add("revealed");
+}
+
+function clearRevealedKeys() {
+  keyboard.querySelectorAll(".key.revealed").forEach((key) => {
+    key.classList.remove("revealed");
+    key.textContent = "";
+  });
+}
+
+function showSuccessMoment(message) {
   successTitle.textContent = "";
 
-  successMessage.split("").forEach((letter, index) => {
+  message.split("").forEach((letter, index) => {
     const letterSpan = document.createElement("span");
 
     letterSpan.textContent = letter === " " ? "\u00a0" : letter;
@@ -227,9 +254,6 @@ function showSuccessMoment(noteLabel) {
     successTitle.appendChild(letterSpan);
   });
 
-  successNote.textContent = isStreakChallengeMode()
-    ? `Note ${noteLabel} - Streak ${sessionStats.currentStreak}/${streakTarget}`
-    : `Note ${noteLabel}`;
   successMoment.classList.remove("hidden");
 }
 
@@ -241,13 +265,11 @@ function hideChallengeComplete() {
   challengeComplete.classList.add("hidden");
 }
 
-function showFeedback(message, type, noteLabel) {
+function showFeedback(message, type) {
   feedback.textContent = message;
   feedback.className = `feedback ${type}`;
 
-  if (type === "correct") {
-    showSuccessMoment(noteLabel);
-  } else {
+  if (type !== "correct") {
     hideSuccessMoment();
   }
 }
@@ -348,14 +370,14 @@ function updateSessionPanel() {
 
 function getSolveMessage() {
   if (sessionStats.roundMisses === 0) {
-    return "Clean solve";
+    return chooseRandomMessage(successMessages.clean);
   }
 
   if (sessionStats.roundMisses === 1) {
-    return "Strong recovery";
+    return chooseRandomMessage(successMessages.recovery);
   }
 
-  return "Solved";
+  return chooseRandomMessage(successMessages.solved);
 }
 
 function recordCorrectAnswer() {
@@ -441,6 +463,7 @@ function updateStartButtonText() {
 function resetPracticeRound() {
   sessionStats.roundMisses = 0;
   hideChallengeComplete();
+  clearRevealedKeys();
 
   if (settings.mode === "pitch-movement") {
     startNoteLabel = chooseStartNoteLabel();
@@ -544,11 +567,17 @@ function handleGuess(guessedNoteIndex) {
   }
 
   if (guessedNoteIndex === mysteryNoteIndex) {
-    const solvedNoteLabel = notes[mysteryNoteIndex].label;
     const solveMessage = getSolveMessage();
 
     recordCorrectAnswer();
-    showFeedback(solveMessage, "correct", solvedNoteLabel);
+    revealNoteOnKey(mysteryNoteIndex);
+    showFeedback(solveMessage, "correct");
+
+    if (isStreakChallengeMode()) {
+      showSuccessMoment(`Streak ${sessionStats.currentStreak}/${settings.streakTarget}`);
+    } else {
+      hideSuccessMoment();
+    }
 
     if (isStreakChallengeMode() && sessionStats.currentStreak >= Number(settings.streakTarget)) {
       completeChallenge();
@@ -633,6 +662,7 @@ function updateKeyboardAvailability() {
 }
 
 playButton.addEventListener("click", () => {
+  clearRevealedKeys();
   playMysteryNote();
   hasPlayedMysteryNote = true;
   playButton.disabled = true;

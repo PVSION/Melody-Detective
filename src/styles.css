@@ -428,14 +428,14 @@ h2 {
 }
 
 .success-moment {
-  width: min(440px, 100%);
+  width: min(360px, 100%);
   display: grid;
   justify-items: center;
-  gap: 4px;
-  margin-top: -4px;
-  padding: 16px 18px;
+  gap: 0;
+  margin-top: -6px;
+  padding: 10px 14px;
   border: 1px solid rgba(89, 217, 142, 0.28);
-  border-radius: 20px;
+  border-radius: 999px;
   background:
     linear-gradient(135deg, rgba(89, 217, 142, 0.16), rgba(74, 163, 255, 0.08)),
     rgba(255, 255, 255, 0.045);
@@ -466,7 +466,7 @@ h2 {
 
 .success-title {
   color: var(--ink);
-  font-size: clamp(1.55rem, 4vw, 2.25rem);
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
   font-weight: 900;
   line-height: 1;
 }
@@ -612,6 +612,13 @@ h2 {
     inset 1px 0 0 rgba(255, 255, 255, 0.75);
 }
 
+.white-key.revealed {
+  color: #07111e;
+  background: linear-gradient(180deg, #e6f4ff 0%, #bddcf8 100%);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
 .black-key {
   position: absolute;
   top: 0;
@@ -647,6 +654,14 @@ h2 {
     0 5px 10px rgba(0, 0, 0, 0.5),
     inset 0 -6px 10px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.black-key.revealed {
+  color: var(--accent-bright);
+  background:
+    linear-gradient(90deg, rgba(117, 189, 255, 0.2), transparent 32%, rgba(117, 189, 255, 0.08) 72%, transparent),
+    linear-gradient(180deg, #323b4c 0%, #121923 48%, #03070d 100%);
+  font-size: clamp(0.8rem, 1.6vw, 1rem);
 }
 
 .black-key:disabled {

@@ -34,10 +34,11 @@ Version 0.1 has one puzzle:
 5. Listen to the mystery note.
 6. Replay the mystery note if you need to hear it again.
 7. Click the matching key on the virtual piano.
-8. The app tells you when you are correct or gives a subtle direction cue.
+8. The app gives varied encouragement when you are correct or gives a subtle direction cue when you miss.
 9. After a wrong guess, compare the mystery note with your guess.
-10. Build your streak and session rank by solving notes without missing.
-11. When you reach your streak goal, choose whether to aim higher or continue the current challenge.
+10. When you are correct, the matching key briefly reveals the note name.
+11. Build your streak and session rank by solving notes without missing.
+12. When you reach your streak goal, choose whether to aim higher or continue the current challenge.
 
 ## Session Progress
 
