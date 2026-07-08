@@ -573,11 +573,7 @@ function handleGuess(guessedNoteIndex) {
     revealNoteOnKey(mysteryNoteIndex);
     showFeedback(solveMessage, "correct");
 
-    if (isStreakChallengeMode()) {
-      showSuccessMoment(`Streak ${sessionStats.currentStreak}/${settings.streakTarget}`);
-    } else {
-      hideSuccessMoment();
-    }
+    showSuccessMoment(solveMessage);
 
     if (isStreakChallengeMode() && sessionStats.currentStreak >= Number(settings.streakTarget)) {
       completeChallenge();
