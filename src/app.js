@@ -75,9 +75,9 @@ const settingLabels = {
 const streakTargets = [5, 10, 20, 30];
 
 const successMessages = {
-  clean: ["You got it!", "Nice ear.", "Locked in.", "Right on pitch.", "Found it."],
-  recovery: ["Good recovery.", "Nice correction.", "You adjusted well.", "Found your way back."],
-  solved: ["Case closed.", "Solved.", "Keep listening.", "You found it."]
+  clean: ["You got it!", "Nice ear.", "Locked in.", "Right on pitch.", "Nailed it."],
+  recovery: ["Good recovery.", "Nice correction.", "Well adjusted.", "Found it."],
+  solved: ["You found it.", "Case closed.", "Nice work.", "Got it."]
 };
 
 const rankLevels = [
@@ -414,8 +414,7 @@ function completeChallenge() {
   hideSuccessMoment();
   hideListeningTools();
   playButton.disabled = true;
-  feedback.textContent = "Challenge complete";
-  feedback.className = "feedback correct";
+  showFeedback("", "");
   challengeCompleteCopy.textContent = `You reached ${streakTarget} clean answers in a row.`;
   challengeComplete.classList.remove("hidden");
   updateModeText();
@@ -571,8 +570,7 @@ function handleGuess(guessedNoteIndex) {
 
     recordCorrectAnswer();
     revealNoteOnKey(mysteryNoteIndex);
-    showFeedback(solveMessage, "correct");
-
+    showFeedback("", "");
     showSuccessMoment(solveMessage);
 
     if (isStreakChallengeMode() && sessionStats.currentStreak >= Number(settings.streakTarget)) {
