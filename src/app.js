@@ -560,6 +560,7 @@ function handleGuess(guessedNoteIndex) {
     movementStep = challenge.semitoneDistance;
     mysteryNoteIndex = challenge.targetIndex;
     pitchMovementPhase = "choose-destination";
+    clearRevealedKeys();
     updateModeText();
     showFeedback("Starting note found. Now move from there.", "");
     return;
@@ -569,7 +570,13 @@ function handleGuess(guessedNoteIndex) {
     const solveMessage = getSolveMessage();
 
     recordCorrectAnswer();
-    revealNoteOnKey(mysteryNoteIndex);
+
+    if (settings.difficulty !== "advanced") {
+      revealNoteOnKey(mysteryNoteIndex);
+    } else {
+      clearRevealedKeys();
+    }
+
     showFeedback("", "");
     showSuccessMoment(solveMessage);
 
