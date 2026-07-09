@@ -221,10 +221,7 @@ function chooseRandomMessage(messages) {
 }
 
 function revealNoteOnKey(noteIndex) {
-  keyboard.querySelectorAll(".key.revealed").forEach((key) => {
-    key.classList.remove("revealed");
-    key.textContent = "";
-  });
+  clearRevealedKeys();
 
   const key = keyboard.querySelector(`[data-note-index="${noteIndex}"]`);
 
@@ -237,13 +234,28 @@ function revealNoteOnKey(noteIndex) {
 }
 
 function clearRevealedKeys() {
-  keyboard.querySelectorAll(".key.revealed").forEach((key) => {
+  keyboard.querySelectorAll(".key.revealed, .key.solved-key").forEach((key) => {
     key.classList.remove("revealed");
+    key.classList.remove("solved-key");
     key.textContent = "";
   });
 }
 
+function celebrateKey(noteIndex) {
+  const key = keyboard.querySelector(`[data-note-index="${noteIndex}"]`);
+
+  if (!key) {
+    return;
+  }
+
+  key.classList.remove("solved-key");
+  void key.offsetWidth;
+  key.classList.add("solved-key");
+}
+
 function showSuccessMoment(message) {
+  successMoment.classList.add("hidden");
+  void successMoment.offsetWidth;
   successTitle.textContent = "";
 
   message.split("").forEach((letter, index) => {
@@ -416,6 +428,8 @@ function completeChallenge() {
   playButton.disabled = true;
   showFeedback("", "");
   challengeCompleteCopy.textContent = `You reached ${streakTarget} clean answers in a row.`;
+  challengeComplete.classList.add("hidden");
+  void challengeComplete.offsetWidth;
   challengeComplete.classList.remove("hidden");
   updateModeText();
 }
@@ -577,6 +591,7 @@ function handleGuess(guessedNoteIndex) {
       clearRevealedKeys();
     }
 
+    celebrateKey(mysteryNoteIndex);
     showFeedback("", "");
     showSuccessMoment(solveMessage);
 
