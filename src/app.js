@@ -42,8 +42,6 @@ const streakCount = document.querySelector("#streak-count");
 const accuracyRate = document.querySelector("#accuracy-rate");
 const attemptCount = document.querySelector("#attempt-count");
 const missCount = document.querySelector("#miss-count");
-const caseProgressText = document.querySelector("#case-progress-text");
-const caseProgressFill = document.querySelector("#case-progress-fill");
 const settingOptions = document.querySelectorAll(".setting-option");
 
 const settings = {
@@ -360,10 +358,6 @@ function updateRank() {
 
 function updateSessionPanel() {
   const streakTarget = Number(settings.streakTarget);
-  const solvedProgress = Math.min(sessionStats.solved, 10);
-  const progressPercent = isStreakChallengeMode()
-    ? Math.min((sessionStats.currentStreak / streakTarget) * 100, 100)
-    : Math.min((solvedProgress / 10) * 100, 100);
 
   rankLabel.textContent = rankLevels[sessionStats.rankIndex].name;
   streakCount.textContent = isStreakChallengeMode()
@@ -372,10 +366,6 @@ function updateSessionPanel() {
   accuracyRate.textContent = `${getSessionAccuracy()}%`;
   attemptCount.textContent = getSessionAttempts();
   missCount.textContent = sessionStats.misses;
-  caseProgressText.textContent = isStreakChallengeMode()
-    ? `${sessionStats.currentStreak} of ${streakTarget} clean solves`
-    : `${sessionStats.solved} cases solved`;
-  caseProgressFill.style.width = `${progressPercent}%`;
 }
 
 function getSolveMessage() {
