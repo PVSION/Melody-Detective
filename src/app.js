@@ -75,9 +75,9 @@ const settingLabels = {
 const streakTargets = [5, 10, 20, 30];
 
 const successMessages = {
-  clean: ["You got it!", "Nice ear.", "Locked in.", "Right on pitch.", "Nailed it."],
-  recovery: ["Good recovery.", "Nice correction.", "Well adjusted.", "Found it."],
-  solved: ["You found it.", "Case closed.", "Nice work.", "Got it."]
+  clean: ["Case closed.", "Sharp ear.", "Clean solve.", "Right on pitch.", "No clues needed."],
+  recovery: ["Good recovery.", "Nice adjustment.", "Found the trail.", "Back on pitch."],
+  solved: ["You found it.", "Case solved.", "Nice work.", "Found the note."]
 };
 
 const rankLevels = [
@@ -562,7 +562,7 @@ function handleGuess(guessedNoteIndex) {
     pitchMovementPhase = "choose-destination";
     clearRevealedKeys();
     updateModeText();
-    showFeedback("Starting note found. Now move from there.", "");
+    showFeedback("Starting note found.", "");
     return;
   }
 
@@ -612,9 +612,9 @@ function handleGuess(guessedNoteIndex) {
   showCompareTools();
 
   if (guessedNoteIndex > mysteryNoteIndex) {
-    showFeedback("Almost - listen lower", "hint");
+    showFeedback("Clue: listen lower", "hint");
   } else {
-    showFeedback("Almost - listen higher", "hint");
+    showFeedback("Clue: listen higher", "hint");
   }
 }
 
