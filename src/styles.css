@@ -144,15 +144,17 @@ h1 {
 }
 
 .menu-card::after {
-  content: "?";
+  content: "CASE 01";
   position: absolute;
   right: clamp(18px, 4vw, 42px);
   top: clamp(14px, 3vw, 30px);
   color: rgba(255, 197, 111, 0.12);
-  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  font-size: clamp(1.2rem, 4vw, 2.4rem);
   font-weight: 900;
+  letter-spacing: 0.08em;
   line-height: 1;
   pointer-events: none;
+  transform: rotate(8deg);
 }
 
 .menu-intro {
@@ -216,6 +218,8 @@ h2 {
 }
 
 .setting-option {
+  position: relative;
+  overflow: hidden;
   min-height: 48px;
   display: flex;
   align-items: center;
@@ -235,6 +239,18 @@ h2 {
   transition: border-color 160ms ease, background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
+.setting-option::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(110deg, transparent 0%, rgba(255, 246, 234, 0.11) 42%, transparent 68%);
+  opacity: 0;
+  transform: translateX(-55%);
+  transition: opacity 180ms ease, transform 420ms ease;
+  pointer-events: none;
+}
+
 .setting-option:hover,
 .setting-option.selected {
   border-color: rgba(255, 197, 111, 0.72);
@@ -244,6 +260,12 @@ h2 {
   box-shadow:
     0 10px 28px rgba(217, 154, 69, 0.16),
     inset 0 1px 0 rgba(255, 246, 234, 0.1);
+}
+
+.setting-option:hover::after,
+.setting-option.selected::after {
+  opacity: 1;
+  transform: translateX(55%);
 }
 
 .setting-option:active {
@@ -349,15 +371,17 @@ h2 {
 }
 
 .game-card::before {
-  content: "Case File";
+  content: "CASE FILE";
   position: absolute;
   top: 18px;
   right: 22px;
-  color: rgba(255, 197, 111, 0.11);
-  font-size: clamp(1.7rem, 4vw, 3.2rem);
+  color: rgba(255, 197, 111, 0.14);
+  font-size: clamp(1rem, 3vw, 2rem);
   font-weight: 900;
+  letter-spacing: 0.1em;
   line-height: 1;
   pointer-events: none;
+  transform: rotate(6deg);
 }
 
 .session-panel {
@@ -393,6 +417,64 @@ h2 {
   color: var(--ink);
   font-size: clamp(1rem, 2vw, 1.25rem);
   line-height: 1.1;
+}
+
+.case-progress {
+  width: min(640px, 100%);
+  display: grid;
+  grid-template-columns: minmax(0, 190px) minmax(160px, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 197, 111, 0.2);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 197, 111, 0.13), rgba(78, 48, 27, 0.28)),
+    rgba(255, 246, 234, 0.035);
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 246, 234, 0.09);
+}
+
+.case-kicker {
+  display: block;
+  color: var(--accent-bright);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.case-progress strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink);
+  font-size: 0.98rem;
+  line-height: 1.15;
+}
+
+.case-track {
+  height: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 246, 234, 0.1);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22), transparent),
+    rgba(22, 13, 7, 0.7);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.38);
+}
+
+.case-track span {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, var(--correct), var(--accent-bright));
+  box-shadow:
+    0 0 22px rgba(111, 224, 157, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition: width 360ms ease;
 }
 
 .instructions {
@@ -467,12 +549,13 @@ h2 {
 }
 
 .success-moment {
-  width: min(390px, 100%);
-  display: grid;
-  justify-items: center;
-  gap: 0;
+  width: min(420px, 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin-top: -6px;
-  padding: 10px 14px;
+  padding: 12px 18px;
   border: 1px solid rgba(111, 224, 157, 0.32);
   border-radius: 999px;
   background:
@@ -493,6 +576,23 @@ h2 {
 .success-note {
   margin: 0;
   text-align: center;
+}
+
+.success-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--accent-ink);
+  background: linear-gradient(145deg, #ffe2a7, var(--accent));
+  font-size: 1.15rem;
+  font-weight: 1000;
+  box-shadow:
+    0 10px 22px rgba(217, 154, 69, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.36);
+  animation: badgePop 520ms ease both;
 }
 
 .success-kicker {
@@ -761,6 +861,23 @@ h2 {
   }
 }
 
+@keyframes badgePop {
+  0% {
+    opacity: 0;
+    transform: rotate(-16deg) scale(0.72);
+  }
+
+  70% {
+    opacity: 1;
+    transform: rotate(7deg) scale(1.08);
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
 @media (max-width: 640px) {
   .app {
     padding: 22px 12px 18px;
@@ -822,6 +939,11 @@ h2 {
 
   .session-panel {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .case-progress {
+    grid-template-columns: 1fr;
+    gap: 9px;
   }
 
   .practice-topbar {
