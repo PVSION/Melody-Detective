@@ -130,6 +130,7 @@ h1 {
 .compare-tools.hidden,
 .movement-command.hidden,
 .play-button.hidden,
+.timer-stat.hidden,
 .challenge-complete.hidden {
   display: none;
 }
@@ -438,6 +439,25 @@ h2 {
   color: var(--ink);
   font-size: clamp(1rem, 2vw, 1.25rem);
   line-height: 1.1;
+}
+
+.timer-stat {
+  border-color: rgba(240, 188, 103, 0.28);
+  background:
+    linear-gradient(180deg, rgba(240, 188, 103, 0.1), transparent),
+    rgba(255, 246, 234, 0.045);
+}
+
+.timer-stat strong {
+  color: var(--accent-bright);
+}
+
+.timer-stat.urgent {
+  border-color: rgba(242, 200, 109, 0.62);
+  box-shadow:
+    0 0 28px rgba(217, 154, 69, 0.18),
+    inset 0 1px 0 rgba(255, 246, 234, 0.1);
+  animation: timerPulse 900ms ease-in-out infinite;
 }
 
 .instructions {
@@ -1048,6 +1068,17 @@ h2 {
   }
 }
 
+@keyframes timerPulse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
 @keyframes badgePop {
   0% {
     opacity: 0;
@@ -1075,6 +1106,7 @@ h2 {
   .challenge-dialog,
   .challenge-dialog::before,
   .case-closed-stamp,
+  .timer-stat.urgent,
   .white-key.solved-key,
   .black-key.solved-key {
     animation: none;

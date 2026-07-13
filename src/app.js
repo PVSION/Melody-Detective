@@ -54,7 +54,11 @@ const streakCount = document.querySelector("#streak-count");
 const accuracyRate = document.querySelector("#accuracy-rate");
 const attemptCount = document.querySelector("#attempt-count");
 const missCount = document.querySelector("#miss-count");
+const timerStat = document.querySelector("#timer-stat");
+const timerCount = document.querySelector("#timer-count");
 const settingOptions = document.querySelectorAll(".setting-option");
+
+const advancedMovementTimeLimit = 8;
 
 const settings = {
   instrument: "piano",
@@ -110,9 +114,15 @@ let hasPlayedMysteryNote = false;
 let lastGuessIndex = null;
 let sessionStats = createFreshSessionStats();
 let challengeFinished = false;
+let movementTimerId = null;
+let movementTimeLeft = advancedMovementTimeLimit;
 
 function isStreakChallengeMode() {
   return settings.mode === "single-note" && settings.difficulty !== "beginner";
+}
+
+function isAdvancedPitchMovementMode() {
+  return settings.mode === "pitch-movement" && settings.difficulty === "advanced";
 }
 
 function createFreshSessionStats() {
@@ -308,6 +318,58 @@ function hideChallengeComplete() {
   challengeComplete.classList.add("hidden");
 }
 
+function stopMovementTimer() {
+  if (movementTimerId) {
+    clearInterval(movementTimerId);
+    movementTimerId = null;
+  }
+}
+
+function updateTimerDisplay() {
+  timerStat.classList.toggle("hidden", !isAdvancedPitchMovementMode());
+  timerStat.classList.toggle("urgent", movementTimeLeft <= 3);
+  timerCount.textContent = isAdvancedPitchMovementMode() ? `${movementTimeLeft}s` : "--";
+}
+
+function handleTimerExpired() {
+  stopMovementTimer();
+  recordMiss();
+  lastGuessIndex = null;
+  showReplayTool();
+  showFeedback("Time ran out. Try the movement again.", "hint");
+  pitchMovementPhase = "choose-start";
+  startNoteLabel = chooseStartNoteLabel();
+  startNoteIndex = getActiveNoteIndexes().find((index) => notes[index].label === startNoteLabel);
+  movementStep = 0;
+  mysteryNoteIndex = startNoteIndex;
+  movementTimeLeft = advancedMovementTimeLimit;
+  clearRevealedKeys();
+  updateModeText();
+  updateTimerDisplay();
+}
+
+function startMovementTimer() {
+  stopMovementTimer();
+
+  if (!isAdvancedPitchMovementMode()) {
+    movementTimeLeft = advancedMovementTimeLimit;
+    updateTimerDisplay();
+    return;
+  }
+
+  movementTimeLeft = advancedMovementTimeLimit;
+  updateTimerDisplay();
+
+  movementTimerId = setInterval(() => {
+    movementTimeLeft -= 1;
+    updateTimerDisplay();
+
+    if (movementTimeLeft <= 0) {
+      handleTimerExpired();
+    }
+  }, 1000);
+}
+
 function showFeedback(message, type) {
   feedback.textContent = message;
   feedback.className = `feedback ${type}`;
@@ -409,6 +471,7 @@ function updateSessionPanel() {
   accuracyRate.textContent = `${getSessionAccuracy()}%`;
   attemptCount.textContent = getSessionAttempts();
   missCount.textContent = sessionStats.misses;
+  updateTimerDisplay();
 }
 
 function getSolveMessage() {
@@ -507,6 +570,8 @@ function updateStartButtonText() {
 function resetPracticeRound() {
   sessionStats.roundMisses = 0;
   hideChallengeComplete();
+  stopMovementTimer();
+  movementTimeLeft = advancedMovementTimeLimit;
   createKeyboard();
 
   if (settings.mode === "pitch-movement") {
@@ -607,6 +672,7 @@ function handleGuess(guessedNoteIndex) {
     pitchMovementPhase = "choose-destination";
     clearRevealedKeys();
     updateModeText();
+    startMovementTimer();
     showFeedback("Starting note found.", "");
     return;
   }
@@ -615,6 +681,8 @@ function handleGuess(guessedNoteIndex) {
     const solveMessage = getSolveMessage();
 
     recordCorrectAnswer();
+    stopMovementTimer();
+    movementTimeLeft = advancedMovementTimeLimit;
 
     if (settings.difficulty !== "advanced") {
       revealNoteOnKey(mysteryNoteIndex);
@@ -654,6 +722,8 @@ function handleGuess(guessedNoteIndex) {
   }
 
   recordMiss();
+  stopMovementTimer();
+  movementTimeLeft = advancedMovementTimeLimit;
   lastGuessIndex = guessedNoteIndex;
   showCompareTools();
 
@@ -661,6 +731,16 @@ function handleGuess(guessedNoteIndex) {
     showFeedback("Clue: listen lower", "hint");
   } else {
     showFeedback("Clue: listen higher", "hint");
+  }
+
+  if (isAdvancedPitchMovementMode()) {
+    pitchMovementPhase = "choose-start";
+    startNoteLabel = chooseStartNoteLabel();
+    startNoteIndex = getActiveNoteIndexes().find((index) => notes[index].label === startNoteLabel);
+    movementStep = 0;
+    mysteryNoteIndex = startNoteIndex;
+    updateModeText();
+    updateTimerDisplay();
   }
 }
 
