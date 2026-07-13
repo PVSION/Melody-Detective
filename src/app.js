@@ -1,17 +1,29 @@
 const notes = [
-  { name: "C4", label: "C", frequency: 261.63, keyType: "white" },
-  { name: "C#4", label: "C#", frequency: 277.18, keyType: "black", position: 12.5 },
-  { name: "D4", label: "D", frequency: 293.66, keyType: "white" },
-  { name: "D#4", label: "D#", frequency: 311.13, keyType: "black", position: 25 },
-  { name: "E4", label: "E", frequency: 329.63, keyType: "white" },
-  { name: "F4", label: "F", frequency: 349.23, keyType: "white" },
-  { name: "F#4", label: "F#", frequency: 369.99, keyType: "black", position: 50 },
-  { name: "G4", label: "G", frequency: 392.0, keyType: "white" },
-  { name: "G#4", label: "G#", frequency: 415.3, keyType: "black", position: 62.5 },
-  { name: "A4", label: "A", frequency: 440.0, keyType: "white" },
-  { name: "A#4", label: "A#", frequency: 466.16, keyType: "black", position: 75 },
-  { name: "B4", label: "B", frequency: 493.88, keyType: "white" },
-  { name: "C5", label: "C", frequency: 523.25, keyType: "white" }
+  { name: "C4", label: "C", frequency: 261.63, keyType: "white", octave: 4 },
+  { name: "C#4", label: "C#", frequency: 277.18, keyType: "black", octave: 4 },
+  { name: "D4", label: "D", frequency: 293.66, keyType: "white", octave: 4 },
+  { name: "D#4", label: "D#", frequency: 311.13, keyType: "black", octave: 4 },
+  { name: "E4", label: "E", frequency: 329.63, keyType: "white", octave: 4 },
+  { name: "F4", label: "F", frequency: 349.23, keyType: "white", octave: 4 },
+  { name: "F#4", label: "F#", frequency: 369.99, keyType: "black", octave: 4 },
+  { name: "G4", label: "G", frequency: 392.0, keyType: "white", octave: 4 },
+  { name: "G#4", label: "G#", frequency: 415.3, keyType: "black", octave: 4 },
+  { name: "A4", label: "A", frequency: 440.0, keyType: "white", octave: 4 },
+  { name: "A#4", label: "A#", frequency: 466.16, keyType: "black", octave: 4 },
+  { name: "B4", label: "B", frequency: 493.88, keyType: "white", octave: 4 },
+  { name: "C5", label: "C", frequency: 523.25, keyType: "white", octave: 5 },
+  { name: "C#5", label: "C#", frequency: 554.37, keyType: "black", octave: 5 },
+  { name: "D5", label: "D", frequency: 587.33, keyType: "white", octave: 5 },
+  { name: "D#5", label: "D#", frequency: 622.25, keyType: "black", octave: 5 },
+  { name: "E5", label: "E", frequency: 659.25, keyType: "white", octave: 5 },
+  { name: "F5", label: "F", frequency: 698.46, keyType: "white", octave: 5 },
+  { name: "F#5", label: "F#", frequency: 739.99, keyType: "black", octave: 5 },
+  { name: "G5", label: "G", frequency: 783.99, keyType: "white", octave: 5 },
+  { name: "G#5", label: "G#", frequency: 830.61, keyType: "black", octave: 5 },
+  { name: "A5", label: "A", frequency: 880.0, keyType: "white", octave: 5 },
+  { name: "A#5", label: "A#", frequency: 932.33, keyType: "black", octave: 5 },
+  { name: "B5", label: "B", frequency: 987.77, keyType: "white", octave: 5 },
+  { name: "C6", label: "C", frequency: 1046.5, keyType: "white", octave: 6 }
 ];
 
 const playButton = document.querySelector("#play-note");
@@ -114,15 +126,26 @@ function createFreshSessionStats() {
   };
 }
 
-function getActiveNoteIndexes() {
+function getVisibleNoteIndexes() {
   if (settings.difficulty !== "advanced") {
     return notes
       .map((note, index) => ({ note, index }))
-      .filter((item) => item.note.keyType === "white")
+      .filter((item) => item.note.octave === 4 || item.note.name === "C5")
       .map((item) => item.index);
   }
 
   return notes.map((note, index) => index);
+}
+
+function getActiveNoteIndexes() {
+  const visibleNoteIndexes = getVisibleNoteIndexes();
+
+  if (settings.difficulty !== "advanced") {
+    return visibleNoteIndexes
+      .filter((noteIndex) => notes[noteIndex].keyType === "white");
+  }
+
+  return visibleNoteIndexes;
 }
 
 function chooseRandomNoteIndex() {
@@ -135,6 +158,10 @@ function chooseRandomNoteIndex() {
 function getMovementOptions() {
   if (settings.difficulty === "beginner") {
     return [-2, -1, 1, 2];
+  }
+
+  if (settings.difficulty === "advanced") {
+    return [-12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   }
 
   return [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];
@@ -184,6 +211,10 @@ function describeMovement(step) {
 
   if (stepCount === 2) {
     distance = "a whole step";
+  }
+
+  if (stepCount === 12) {
+    distance = "an octave";
   }
 
   return `Go ${direction} ${distance}`;
@@ -476,7 +507,7 @@ function updateStartButtonText() {
 function resetPracticeRound() {
   sessionStats.roundMisses = 0;
   hideChallengeComplete();
-  clearRevealedKeys();
+  createKeyboard();
 
   if (settings.mode === "pitch-movement") {
     startNoteLabel = chooseStartNoteLabel();
@@ -634,7 +665,17 @@ function handleGuess(guessedNoteIndex) {
 }
 
 function createKeyboard() {
-  notes.forEach((note, index) => {
+  const visibleNoteIndexes = getVisibleNoteIndexes();
+  const visibleWhiteKeyIndexes = visibleNoteIndexes.filter((noteIndex) => notes[noteIndex].keyType === "white");
+  const blackKeyWidth = (100 / visibleWhiteKeyIndexes.length) * 0.64;
+
+  keyboard.innerHTML = "";
+  keyboard.style.setProperty("--black-key-width", `${blackKeyWidth}%`);
+  keyboard.classList.toggle("expanded-keyboard", settings.difficulty === "advanced");
+
+  visibleNoteIndexes.forEach((index) => {
+    const note = notes[index];
+
     if (note.keyType !== "white") {
       return;
     }
@@ -650,17 +691,21 @@ function createKeyboard() {
     keyboard.appendChild(key);
   });
 
-  notes.forEach((note, index) => {
+  visibleNoteIndexes.forEach((index) => {
+    const note = notes[index];
+
     if (note.keyType !== "black") {
       return;
     }
 
     const key = document.createElement("button");
+    const whiteKeysBefore = visibleWhiteKeyIndexes.filter((whiteKeyIndex) => whiteKeyIndex < index).length;
+    const blackKeyPosition = (whiteKeysBefore / visibleWhiteKeyIndexes.length) * 100;
 
     key.className = "key black-key";
     key.type = "button";
     key.dataset.noteIndex = index;
-    key.style.setProperty("--key-left", `${note.position}%`);
+    key.style.setProperty("--key-left", `${blackKeyPosition}%`);
     key.setAttribute("aria-label", `Guess ${note.label}`);
     key.addEventListener("click", () => handleGuess(index));
 
