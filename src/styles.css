@@ -131,7 +131,8 @@ h1 {
 .movement-command.hidden,
 .play-button.hidden,
 .timer-stat.hidden,
-.challenge-complete.hidden {
+.challenge-complete.hidden,
+.session-summary.hidden {
   display: none;
 }
 
@@ -698,7 +699,8 @@ h2 {
   animation: stampIn 560ms ease 180ms both;
 }
 
-.challenge-complete {
+.challenge-complete,
+.session-summary {
   position: fixed;
   inset: 0;
   z-index: 20;
@@ -713,7 +715,8 @@ h2 {
   animation: overlayFade 220ms ease both;
 }
 
-.challenge-dialog {
+.challenge-dialog,
+.summary-dialog {
   position: relative;
   overflow: hidden;
   width: min(560px, 100%);
@@ -735,7 +738,13 @@ h2 {
   animation: successRise 420ms ease both;
 }
 
-.challenge-dialog::before {
+.summary-dialog {
+  width: min(720px, 100%);
+  gap: 16px;
+}
+
+.challenge-dialog::before,
+.summary-dialog::before {
   content: "";
   position: absolute;
   inset: -20%;
@@ -746,7 +755,8 @@ h2 {
   pointer-events: none;
 }
 
-.challenge-dialog > * {
+.challenge-dialog > *,
+.summary-dialog > * {
   position: relative;
   z-index: 1;
 }
@@ -769,20 +779,84 @@ h2 {
 }
 
 .challenge-complete h2,
-.challenge-complete p {
+.challenge-complete p,
+.session-summary h2,
+.session-summary p {
   margin: 0;
 }
 
-.challenge-complete h2 {
+.challenge-complete h2,
+.session-summary h2 {
   font-size: clamp(1.7rem, 5vw, 2.6rem);
 }
 
-.challenge-complete p:not(.success-kicker) {
+.challenge-complete p:not(.success-kicker),
+.session-summary p:not(.success-kicker) {
   color: var(--muted);
   line-height: 1.5;
 }
 
-.challenge-actions {
+.summary-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.summary-stat,
+.summary-learning > div {
+  border: 1px solid rgba(255, 246, 234, 0.12);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 234, 0.09), rgba(255, 246, 234, 0.02)),
+    rgba(20, 12, 7, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255, 246, 234, 0.08);
+}
+
+.summary-stat {
+  min-height: 82px;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  padding: 14px 10px;
+}
+
+.summary-stat span,
+.summary-learning span {
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.summary-stat strong {
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+}
+
+.summary-learning {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.summary-learning > div {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  text-align: left;
+}
+
+.summary-learning strong {
+  color: var(--text);
+  font-size: clamp(0.95rem, 2vw, 1.08rem);
+  line-height: 1.35;
+}
+
+.challenge-actions,
+.summary-actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -1140,8 +1214,11 @@ h2 {
   .success-title span,
   .success-stamp,
   .challenge-complete,
+  .session-summary,
   .challenge-dialog,
+  .summary-dialog,
   .challenge-dialog::before,
+  .summary-dialog::before,
   .case-closed-stamp,
   .timer-stat.urgent,
   .white-key.solved-key,
@@ -1221,6 +1298,11 @@ h2 {
   }
 
   .learning-insights {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-grid,
+  .summary-learning {
     grid-template-columns: 1fr;
   }
 

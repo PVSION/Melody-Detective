@@ -35,7 +35,19 @@ const successTitle = document.querySelector(".success-title");
 const challengeComplete = document.querySelector("#challenge-complete");
 const challengeCompleteCopy = document.querySelector("#challenge-complete-copy");
 const aimHigherButton = document.querySelector("#aim-higher");
+const viewSummaryButton = document.querySelector("#view-summary");
 const continueChallengeButton = document.querySelector("#continue-challenge");
+const sessionSummary = document.querySelector("#session-summary");
+const summaryTakeaway = document.querySelector("#summary-takeaway");
+const summarySolves = document.querySelector("#summary-solves");
+const summaryMisses = document.querySelector("#summary-misses");
+const summaryAccuracy = document.querySelector("#summary-accuracy");
+const summaryBestStreak = document.querySelector("#summary-best-streak");
+const summaryRank = document.querySelector("#summary-rank");
+const summaryStrength = document.querySelector("#summary-strength");
+const summaryFocus = document.querySelector("#summary-focus");
+const summaryMenuButton = document.querySelector("#summary-menu");
+const summaryContinueButton = document.querySelector("#summary-continue");
 const keyboard = document.querySelector("#keyboard");
 const listeningTools = document.querySelector("#listening-tools");
 const compareTools = document.querySelector("#compare-tools");
@@ -458,6 +470,10 @@ function hideChallengeComplete() {
   challengeComplete.classList.add("hidden");
 }
 
+function hideSessionSummary() {
+  sessionSummary.classList.add("hidden");
+}
+
 function stopMovementTimer() {
   if (movementTimerId) {
     clearInterval(movementTimerId);
@@ -704,6 +720,75 @@ function updatePracticeSummary() {
     : `${instrument} - ${mode} - ${difficulty}`;
 }
 
+function getSessionTakeaway() {
+  const attempts = getSessionAttempts();
+  const accuracy = getSessionAccuracy();
+
+  if (attempts === 0) {
+    return "No practice recorded yet.";
+  }
+
+  if (accuracy >= 85 && sessionStats.bestStreak >= 3) {
+    return "Strong session. Your ear stayed accurate under pressure.";
+  }
+
+  if (sessionStats.misses > sessionStats.solved) {
+    return "Useful reps. Your misses are showing the next notes to study.";
+  }
+
+  if (sessionStats.bestStreak >= 3) {
+    return "Good momentum. You are starting to hear the pattern faster.";
+  }
+
+  return "Good session. Keep building the connection between sound and key.";
+}
+
+function updateSessionSummary() {
+  summaryTakeaway.textContent = getSessionTakeaway();
+  summarySolves.textContent = sessionStats.solved;
+  summaryMisses.textContent = sessionStats.misses;
+  summaryAccuracy.textContent = `${getSessionAccuracy()}%`;
+  summaryBestStreak.textContent = sessionStats.bestStreak;
+  summaryRank.textContent = rankLevels[sessionStats.rankIndex].name;
+  summaryStrength.textContent = getStrongestNoteInsight();
+  summaryFocus.textContent = getFocusInsight();
+}
+
+function showSessionSummary() {
+  stopMovementTimer();
+  hideSuccessMoment();
+  hideChallengeComplete();
+  updateSessionSummary();
+  sessionSummary.classList.remove("hidden");
+}
+
+function continueFromSessionSummary() {
+  hideSessionSummary();
+
+  if (challengeFinished) {
+    startFreshSession();
+    return;
+  }
+
+  if (isAdvancedPitchMovementMode() && pitchMovementPhase === "choose-destination") {
+    startMovementTimer();
+  }
+}
+
+function returnToMenuFromSummary() {
+  hideSessionSummary();
+  showMenu();
+}
+
+function handleBackToMenu() {
+  if (getSessionAttempts() > 0) {
+    showSessionSummary();
+    return;
+  }
+
+  showMenu();
+}
+
 function updateStartButtonText() {
   startPracticeButton.textContent = "Start Practice";
 }
@@ -711,6 +796,7 @@ function updateStartButtonText() {
 function resetPracticeRound() {
   sessionStats.roundMisses = 0;
   hideChallengeComplete();
+  hideSessionSummary();
   stopMovementTimer();
   movementTimeLeft = advancedMovementTimeLimit;
   createKeyboard();
@@ -962,12 +1048,15 @@ playYourGuessButton.addEventListener("click", playLastGuess);
 startPracticeButton.addEventListener("click", handleStartPractice);
 startSelectedChallengeButton.addEventListener("click", startPractice);
 backToStartButton.addEventListener("click", showMenu);
-backToMenuButton.addEventListener("click", showMenu);
+backToMenuButton.addEventListener("click", handleBackToMenu);
 aimHigherButton.addEventListener("click", () => {
   chooseNextStreakTarget();
   startFreshSession();
 });
+viewSummaryButton.addEventListener("click", showSessionSummary);
 continueChallengeButton.addEventListener("click", startFreshSession);
+summaryMenuButton.addEventListener("click", returnToMenuFromSummary);
+summaryContinueButton.addEventListener("click", continueFromSessionSummary);
 
 settingOptions.forEach((option) => {
   option.addEventListener("click", () => handleSettingChoice(option));

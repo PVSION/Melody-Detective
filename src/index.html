@@ -178,7 +178,56 @@
               <p id="challenge-complete-copy">You reached your streak goal.</p>
               <div class="challenge-actions">
                 <button id="aim-higher" class="play-button" type="button">Aim Higher</button>
+                <button id="view-summary" class="secondary-button" type="button">View Summary</button>
                 <button id="continue-challenge" class="secondary-button" type="button">Continue Current Challenge</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="session-summary" class="session-summary hidden" role="dialog" aria-modal="true" aria-labelledby="summary-title">
+            <div class="summary-dialog">
+              <span class="case-closed-stamp">Case Notes</span>
+              <p class="success-kicker">Session summary</p>
+              <h2 id="summary-title">What your ear showed today</h2>
+              <p id="summary-takeaway">Every session leaves a clue.</p>
+
+              <div class="summary-grid" aria-label="Session results">
+                <div class="summary-stat">
+                  <span>Solves</span>
+                  <strong id="summary-solves">0</strong>
+                </div>
+                <div class="summary-stat">
+                  <span>Misses</span>
+                  <strong id="summary-misses">0</strong>
+                </div>
+                <div class="summary-stat">
+                  <span>Accuracy</span>
+                  <strong id="summary-accuracy">100%</strong>
+                </div>
+                <div class="summary-stat">
+                  <span>Best Streak</span>
+                  <strong id="summary-best-streak">0</strong>
+                </div>
+                <div class="summary-stat">
+                  <span>Rank</span>
+                  <strong id="summary-rank">Beginner</strong>
+                </div>
+              </div>
+
+              <div class="summary-learning" aria-label="Learning notes">
+                <div>
+                  <span>Strong Ear</span>
+                  <strong id="summary-strength">Solve a few notes to reveal your strengths.</strong>
+                </div>
+                <div>
+                  <span>Focus Clue</span>
+                  <strong id="summary-focus">Misses will show which notes need attention.</strong>
+                </div>
+              </div>
+
+              <div class="summary-actions">
+                <button id="summary-menu" class="secondary-button" type="button">Back to Menu</button>
+                <button id="summary-continue" class="play-button" type="button">Keep Practicing</button>
               </div>
             </div>
           </div>
