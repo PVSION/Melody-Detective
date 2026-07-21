@@ -231,37 +231,62 @@ h2 {
 
 .profile-card {
   width: min(980px, 100%);
+  position: relative;
   display: grid;
-  grid-template-columns: 0.8fr 1.2fr 1.2fr;
-  gap: 10px;
+  grid-template-columns: 0.74fr 1.28fr 1.28fr;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 197, 111, 0.18);
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, rgba(255, 197, 111, 0.12), rgba(255, 246, 234, 0.035)),
+    rgba(20, 12, 7, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 234, 0.08),
+    0 12px 30px rgba(0, 0, 0, 0.18);
   z-index: 1;
+}
+
+.profile-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--accent-bright), rgba(217, 154, 69, 0.35));
+  pointer-events: none;
 }
 
 .profile-card > div {
   display: grid;
   align-content: center;
   gap: 4px;
-  min-height: 84px;
-  padding: 16px;
-  border: 1px solid rgba(255, 197, 111, 0.2);
-  border-radius: 18px;
+  min-height: 66px;
+  padding: 12px 18px;
+  background: rgba(255, 246, 234, 0.035);
+}
+
+.profile-card-title {
+  padding-left: 22px;
   background:
-    linear-gradient(180deg, rgba(255, 246, 234, 0.07), rgba(255, 246, 234, 0.02)),
-    rgba(27, 16, 10, 0.42);
-  box-shadow: inset 0 1px 0 rgba(255, 246, 234, 0.08);
+    linear-gradient(180deg, rgba(255, 197, 111, 0.1), rgba(255, 246, 234, 0.03)),
+    rgba(42, 22, 8, 0.28);
+}
+
+.profile-card-clue {
+  border-left: 1px solid rgba(255, 246, 234, 0.08);
 }
 
 .profile-card span {
   color: var(--accent-bright);
-  font-size: 0.68rem;
+  font-size: 0.64rem;
   font-weight: 900;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
 .profile-card strong {
   color: var(--text);
-  font-size: clamp(0.98rem, 2vw, 1.08rem);
+  font-size: clamp(0.92rem, 1.6vw, 1rem);
   line-height: 1.32;
 }
 
@@ -1306,6 +1331,11 @@ h2 {
 
   .profile-card {
     grid-template-columns: 1fr;
+  }
+
+  .profile-card-clue {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 246, 234, 0.08);
   }
 
   .setting-group {
