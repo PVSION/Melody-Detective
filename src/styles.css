@@ -229,6 +229,42 @@ h2 {
   z-index: 1;
 }
 
+.profile-card {
+  width: min(980px, 100%);
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr 1.2fr;
+  gap: 10px;
+  z-index: 1;
+}
+
+.profile-card > div {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  min-height: 84px;
+  padding: 16px;
+  border: 1px solid rgba(255, 197, 111, 0.2);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 234, 0.07), rgba(255, 246, 234, 0.02)),
+    rgba(27, 16, 10, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255, 246, 234, 0.08);
+}
+
+.profile-card span {
+  color: var(--accent-bright);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.profile-card strong {
+  color: var(--text);
+  font-size: clamp(0.98rem, 2vw, 1.08rem);
+  line-height: 1.32;
+}
+
 .challenge-nav {
   display: flex;
   align-items: center;
@@ -1265,6 +1301,10 @@ h2 {
   }
 
   .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card {
     grid-template-columns: 1fr;
   }
 

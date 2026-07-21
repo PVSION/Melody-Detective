@@ -8,8 +8,10 @@ const {
   successMessages
 } = window.MelodyConfig;
 const {
+  cloneFreshLearningProfile,
   getFocusInsight,
   getStrongestNoteInsight,
+  recordAttemptInProfile,
   recordLearningAttempt
 } = window.MelodyLearningProfile;
 
@@ -57,6 +59,8 @@ const timerStat = document.querySelector("#timer-stat");
 const timerCount = document.querySelector("#timer-count");
 const strengthInsight = document.querySelector("#strength-insight");
 const focusInsight = document.querySelector("#focus-insight");
+const profileStrengthInsight = document.querySelector("#profile-strength-insight");
+const profileFocusInsight = document.querySelector("#profile-focus-insight");
 const settingOptions = document.querySelectorAll(".setting-option");
 
 const settings = {
@@ -74,6 +78,7 @@ let pitchMovementPhase = "choose-start";
 let hasPlayedMysteryNote = false;
 let lastGuessIndex = null;
 let sessionStats = createFreshSessionStats();
+let sessionLearningProfile = cloneFreshLearningProfile();
 let challengeFinished = false;
 let movementTimerId = null;
 let movementTimeLeft = advancedMovementTimeLimit;
@@ -109,11 +114,16 @@ function updateLearningInsights() {
   const hasSessionAttempts = getSessionAttempts() > 0;
 
   strengthInsight.textContent = hasSessionAttempts
-    ? getStrongestNoteInsight()
+    ? getStrongestNoteInsight(sessionLearningProfile)
     : getDefaultStrengthInsight();
   focusInsight.textContent = hasSessionAttempts
-    ? getFocusInsight()
+    ? getFocusInsight(sessionLearningProfile)
     : getDefaultFocusInsight();
+}
+
+function updateProfileCard() {
+  profileStrengthInsight.textContent = getStrongestNoteInsight();
+  profileFocusInsight.textContent = getFocusInsight();
 }
 
 function getVisibleNoteIndexes() {
@@ -292,7 +302,9 @@ function handleTimerExpired() {
   stopMovementTimer();
   recordMiss();
   recordLearningAttempt(mysteryNoteIndex, null, false);
+  recordAttemptInProfile(sessionLearningProfile, mysteryNoteIndex, null, false);
   updateLearningInsights();
+  updateProfileCard();
   lastGuessIndex = null;
   showReplayTool();
   showFeedback("Time ran out. Try the movement again.", "hint");
@@ -490,6 +502,7 @@ function completeChallenge() {
 function startFreshSession() {
   challengeFinished = false;
   sessionStats = createFreshSessionStats();
+  sessionLearningProfile = cloneFreshLearningProfile();
   hideChallengeComplete();
   updatePracticeSummary();
   updateSessionPanel();
@@ -555,10 +568,10 @@ function updateSessionSummary() {
   summaryBestStreak.textContent = sessionStats.bestStreak;
   summaryRank.textContent = rankLevels[sessionStats.rankIndex].name;
   summaryStrength.textContent = hasSessionAttempts
-    ? getStrongestNoteInsight()
+    ? getStrongestNoteInsight(sessionLearningProfile)
     : getDefaultStrengthInsight();
   summaryFocus.textContent = hasSessionAttempts
-    ? getFocusInsight()
+    ? getFocusInsight(sessionLearningProfile)
     : getDefaultFocusInsight();
 }
 
@@ -637,6 +650,7 @@ function showMenu() {
   challengeScreen.classList.add("hidden");
   practiceScreen.classList.add("hidden");
   menuScreen.classList.remove("hidden");
+  updateProfileCard();
   resetPracticeRound();
 }
 
@@ -718,7 +732,9 @@ function handleGuess(guessedNoteIndex) {
 
     recordCorrectAnswer();
     recordLearningAttempt(mysteryNoteIndex, guessedNoteIndex, true);
+    recordAttemptInProfile(sessionLearningProfile, mysteryNoteIndex, guessedNoteIndex, true);
     updateLearningInsights();
+    updateProfileCard();
     stopMovementTimer();
     movementTimeLeft = advancedMovementTimeLimit;
 
@@ -761,7 +777,9 @@ function handleGuess(guessedNoteIndex) {
 
   recordMiss();
   recordLearningAttempt(mysteryNoteIndex, guessedNoteIndex, false);
+  recordAttemptInProfile(sessionLearningProfile, mysteryNoteIndex, guessedNoteIndex, false);
   updateLearningInsights();
+  updateProfileCard();
   stopMovementTimer();
   movementTimeLeft = advancedMovementTimeLimit;
   lastGuessIndex = guessedNoteIndex;
@@ -878,3 +896,4 @@ updatePracticeSummary();
 updateStartButtonText();
 updateModeText();
 updateLearningInsights();
+updateProfileCard();

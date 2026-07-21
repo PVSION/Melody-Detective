@@ -14,6 +14,10 @@ function createFreshLearningProfile() {
   };
 }
 
+function cloneFreshLearningProfile() {
+  return createFreshLearningProfile();
+}
+
 function loadLearningProfile() {
   try {
     const savedProfile = localStorage.getItem(learningProfileStorageKey);
@@ -43,28 +47,28 @@ function getNoteLearningKey(noteIndex) {
   return notes[noteIndex].label;
 }
 
-function getNoteStats(noteKey) {
-  if (!learningProfile.noteStats[noteKey]) {
-    learningProfile.noteStats[noteKey] = {
+function getNoteStats(profile, noteKey) {
+  if (!profile.noteStats[noteKey]) {
+    profile.noteStats[noteKey] = {
       attempts: 0,
       correct: 0,
       misses: 0
     };
   }
 
-  return learningProfile.noteStats[noteKey];
+  return profile.noteStats[noteKey];
 }
 
-function recordLearningAttempt(targetNoteIndex, guessedNoteIndex, wasCorrect) {
+function recordAttemptInProfile(profile, targetNoteIndex, guessedNoteIndex, wasCorrect) {
   const targetNote = getNoteLearningKey(targetNoteIndex);
-  const targetStats = getNoteStats(targetNote);
+  const targetStats = getNoteStats(profile, targetNote);
 
   targetStats.attempts += 1;
-  learningProfile.totalAttempts += 1;
+  profile.totalAttempts += 1;
 
   if (wasCorrect) {
     targetStats.correct += 1;
-    learningProfile.totalSolves += 1;
+    profile.totalSolves += 1;
   } else {
     targetStats.misses += 1;
 
@@ -73,16 +77,20 @@ function recordLearningAttempt(targetNoteIndex, guessedNoteIndex, wasCorrect) {
 
       if (guessedNote !== targetNote) {
         const confusionKey = `${targetNote}->${guessedNote}`;
-        learningProfile.confusionStats[confusionKey] = (learningProfile.confusionStats[confusionKey] || 0) + 1;
+        profile.confusionStats[confusionKey] = (profile.confusionStats[confusionKey] || 0) + 1;
       }
     }
   }
+}
+
+function recordLearningAttempt(targetNoteIndex, guessedNoteIndex, wasCorrect) {
+  recordAttemptInProfile(learningProfile, targetNoteIndex, guessedNoteIndex, wasCorrect);
 
   saveLearningProfile();
 }
 
-function getStrongestNoteInsight() {
-  const strongNotes = Object.entries(learningProfile.noteStats)
+function getStrongestNoteInsight(profile = learningProfile) {
+  const strongNotes = Object.entries(profile.noteStats)
     .map(([note, stats]) => ({
       note,
       attempts: stats.attempts,
@@ -92,7 +100,7 @@ function getStrongestNoteInsight() {
     .sort((a, b) => b.accuracy - a.accuracy || b.attempts - a.attempts);
 
   if (strongNotes.length === 0) {
-    return learningProfile.totalAttempts >= 3
+    return profile.totalAttempts >= 3
       ? "Keep solving. Your strongest notes are still forming."
       : "Solve a few notes to reveal your strengths.";
   }
@@ -100,8 +108,8 @@ function getStrongestNoteInsight() {
   return `You have a good ear for ${strongNotes[0].note}.`;
 }
 
-function getFocusInsight() {
-  const commonConfusions = Object.entries(learningProfile.confusionStats)
+function getFocusInsight(profile = learningProfile) {
+  const commonConfusions = Object.entries(profile.confusionStats)
     .map(([pair, count]) => {
       const [targetNote, guessedNote] = pair.split("->");
 
@@ -116,7 +124,7 @@ function getFocusInsight() {
     return `You sometimes confuse ${topConfusion.targetNote} for ${topConfusion.guessedNote}.`;
   }
 
-  const weakNotes = Object.entries(learningProfile.noteStats)
+  const weakNotes = Object.entries(profile.noteStats)
     .map(([note, stats]) => ({
       note,
       attempts: stats.attempts,
@@ -130,14 +138,16 @@ function getFocusInsight() {
     return `${weakNotes[0].note} needs a little more attention.`;
   }
 
-  return learningProfile.totalAttempts >= 4
+  return profile.totalAttempts >= 4
     ? "No clear weak spot yet. Keep collecting clues."
     : "Misses will show which notes need attention.";
 }
 
 window.MelodyLearningProfile = {
+  cloneFreshLearningProfile,
   getFocusInsight,
   getStrongestNoteInsight,
+  recordAttemptInProfile,
   recordLearningAttempt
 };
 })();
