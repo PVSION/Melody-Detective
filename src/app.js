@@ -97,9 +97,23 @@ function createFreshSessionStats() {
   };
 }
 
+function getDefaultStrengthInsight() {
+  return "Solve a few notes to reveal your strengths.";
+}
+
+function getDefaultFocusInsight() {
+  return "Misses will show which notes need attention.";
+}
+
 function updateLearningInsights() {
-  strengthInsight.textContent = getStrongestNoteInsight();
-  focusInsight.textContent = getFocusInsight();
+  const hasSessionAttempts = getSessionAttempts() > 0;
+
+  strengthInsight.textContent = hasSessionAttempts
+    ? getStrongestNoteInsight()
+    : getDefaultStrengthInsight();
+  focusInsight.textContent = hasSessionAttempts
+    ? getFocusInsight()
+    : getDefaultFocusInsight();
 }
 
 function getVisibleNoteIndexes() {
@@ -532,14 +546,20 @@ function getSessionTakeaway() {
 }
 
 function updateSessionSummary() {
+  const hasSessionAttempts = getSessionAttempts() > 0;
+
   summaryTakeaway.textContent = getSessionTakeaway();
   summarySolves.textContent = sessionStats.solved;
   summaryMisses.textContent = sessionStats.misses;
   summaryAccuracy.textContent = `${getSessionAccuracy()}%`;
   summaryBestStreak.textContent = sessionStats.bestStreak;
   summaryRank.textContent = rankLevels[sessionStats.rankIndex].name;
-  summaryStrength.textContent = getStrongestNoteInsight();
-  summaryFocus.textContent = getFocusInsight();
+  summaryStrength.textContent = hasSessionAttempts
+    ? getStrongestNoteInsight()
+    : getDefaultStrengthInsight();
+  summaryFocus.textContent = hasSessionAttempts
+    ? getFocusInsight()
+    : getDefaultFocusInsight();
 }
 
 function showSessionSummary() {
