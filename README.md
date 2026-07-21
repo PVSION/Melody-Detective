@@ -52,7 +52,9 @@ Melody Detective currently tracks progress during a practice session.
 - **Misses** shows how many incorrect guesses happened in the session.
 - **Rank** starts at **Beginner** and can rise through **Listener**, **Detective**, **Virtuoso**, and **Mozart**.
 
-Progress is not saved permanently yet. Closing or refreshing the page starts a new session.
+Session progress is not saved permanently yet. Closing or refreshing the page starts a new session.
+
+The app does save lightweight learning clues on the user's device, such as notes they are strong at and notes they commonly confuse. This uses the browser's local storage, not a database or account system.
 
 ## How to Run
 
@@ -77,14 +79,25 @@ GitHub Pages looks for an `index.html` file at the published location. This proj
 ```text
 melody detective/
   README.md
+  index.html
   docs/
     v0.1-plan.md
   src/
     index.html
     styles.css
     app.js
+    audio.js
+    config.js
+    learning-profile.js
   assets/
 ```
+
+The JavaScript is split by responsibility:
+
+- `config.js` stores shared app data like notes, ranks, messages, and difficulty labels.
+- `audio.js` handles sound playback with the Web Audio API.
+- `learning-profile.js` tracks personalized strengths and focus clues in the browser.
+- `app.js` connects the interface, game flow, keyboard, stats, and practice modes.
 
 ## Technology
 

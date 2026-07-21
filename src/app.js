@@ -1,30 +1,17 @@
-const notes = [
-  { name: "C4", label: "C", frequency: 261.63, keyType: "white", octave: 4 },
-  { name: "C#4", label: "C#", frequency: 277.18, keyType: "black", octave: 4 },
-  { name: "D4", label: "D", frequency: 293.66, keyType: "white", octave: 4 },
-  { name: "D#4", label: "D#", frequency: 311.13, keyType: "black", octave: 4 },
-  { name: "E4", label: "E", frequency: 329.63, keyType: "white", octave: 4 },
-  { name: "F4", label: "F", frequency: 349.23, keyType: "white", octave: 4 },
-  { name: "F#4", label: "F#", frequency: 369.99, keyType: "black", octave: 4 },
-  { name: "G4", label: "G", frequency: 392.0, keyType: "white", octave: 4 },
-  { name: "G#4", label: "G#", frequency: 415.3, keyType: "black", octave: 4 },
-  { name: "A4", label: "A", frequency: 440.0, keyType: "white", octave: 4 },
-  { name: "A#4", label: "A#", frequency: 466.16, keyType: "black", octave: 4 },
-  { name: "B4", label: "B", frequency: 493.88, keyType: "white", octave: 4 },
-  { name: "C5", label: "C", frequency: 523.25, keyType: "white", octave: 5 },
-  { name: "C#5", label: "C#", frequency: 554.37, keyType: "black", octave: 5 },
-  { name: "D5", label: "D", frequency: 587.33, keyType: "white", octave: 5 },
-  { name: "D#5", label: "D#", frequency: 622.25, keyType: "black", octave: 5 },
-  { name: "E5", label: "E", frequency: 659.25, keyType: "white", octave: 5 },
-  { name: "F5", label: "F", frequency: 698.46, keyType: "white", octave: 5 },
-  { name: "F#5", label: "F#", frequency: 739.99, keyType: "black", octave: 5 },
-  { name: "G5", label: "G", frequency: 783.99, keyType: "white", octave: 5 },
-  { name: "G#5", label: "G#", frequency: 830.61, keyType: "black", octave: 5 },
-  { name: "A5", label: "A", frequency: 880.0, keyType: "white", octave: 5 },
-  { name: "A#5", label: "A#", frequency: 932.33, keyType: "black", octave: 5 },
-  { name: "B5", label: "B", frequency: 987.77, keyType: "white", octave: 5 },
-  { name: "C6", label: "C", frequency: 1046.5, keyType: "white", octave: 6 }
-];
+const { playFrequency } = window.MelodyAudio;
+const {
+  advancedMovementTimeLimit,
+  notes,
+  rankLevels,
+  settingLabels,
+  streakTargets,
+  successMessages
+} = window.MelodyConfig;
+const {
+  getFocusInsight,
+  getStrongestNoteInsight,
+  recordLearningAttempt
+} = window.MelodyLearningProfile;
 
 const playButton = document.querySelector("#play-note");
 const instructions = document.querySelector("#instructions");
@@ -72,9 +59,6 @@ const strengthInsight = document.querySelector("#strength-insight");
 const focusInsight = document.querySelector("#focus-insight");
 const settingOptions = document.querySelectorAll(".setting-option");
 
-const advancedMovementTimeLimit = 8;
-const learningProfileStorageKey = "melodyDetectiveLearningProfile";
-
 const settings = {
   instrument: "piano",
   mode: "single-note",
@@ -82,44 +66,6 @@ const settings = {
   streakTarget: "5"
 };
 
-const settingLabels = {
-  instrument: {
-    piano: "Piano"
-  },
-  mode: {
-    "single-note": "Find One Note",
-    "pitch-movement": "Pitch Movement"
-  },
-  difficulty: {
-    beginner: "Beginner",
-    intermediate: "Intermediate",
-    advanced: "Advanced"
-  },
-  streakTarget: {
-    5: "5 Streak",
-    10: "10 Streak",
-    20: "20 Streak",
-    30: "30 Streak"
-  }
-};
-
-const streakTargets = [5, 10, 20, 30];
-
-const successMessages = {
-  clean: ["Case closed.", "Sharp ear.", "Clean solve.", "Right on pitch.", "No clues needed."],
-  recovery: ["Good recovery.", "Nice adjustment.", "Found the trail.", "Back on pitch."],
-  solved: ["You found it.", "Case solved.", "Nice work.", "Found the note."]
-};
-
-const rankLevels = [
-  { name: "Beginner", minSolved: 0, minAccuracy: 0, minBestStreak: 0 },
-  { name: "Listener", minSolved: 3, minAccuracy: 60, minBestStreak: 2 },
-  { name: "Detective", minSolved: 6, minAccuracy: 75, minBestStreak: 3 },
-  { name: "Virtuoso", minSolved: 10, minAccuracy: 85, minBestStreak: 5 },
-  { name: "Mozart", minSolved: 20, minAccuracy: 90, minBestStreak: 10 }
-];
-
-let audioContext;
 let mysteryNoteIndex = chooseRandomNoteIndex();
 let startNoteIndex = mysteryNoteIndex;
 let startNoteLabel = notes[startNoteIndex].label;
@@ -131,7 +77,6 @@ let sessionStats = createFreshSessionStats();
 let challengeFinished = false;
 let movementTimerId = null;
 let movementTimeLeft = advancedMovementTimeLimit;
-let learningProfile = loadLearningProfile();
 
 function isStreakChallengeMode() {
   return settings.mode === "single-note" && settings.difficulty !== "beginner";
@@ -150,137 +95,6 @@ function createFreshSessionStats() {
     rankIndex: 0,
     roundMisses: 0
   };
-}
-
-function createFreshLearningProfile() {
-  return {
-    noteStats: {},
-    confusionStats: {},
-    totalAttempts: 0,
-    totalSolves: 0
-  };
-}
-
-function loadLearningProfile() {
-  try {
-    const savedProfile = localStorage.getItem(learningProfileStorageKey);
-
-    if (!savedProfile) {
-      return createFreshLearningProfile();
-    }
-
-    return {
-      ...createFreshLearningProfile(),
-      ...JSON.parse(savedProfile)
-    };
-  } catch (error) {
-    return createFreshLearningProfile();
-  }
-}
-
-function saveLearningProfile() {
-  try {
-    localStorage.setItem(learningProfileStorageKey, JSON.stringify(learningProfile));
-  } catch (error) {
-    // If storage is unavailable, the app still works for the current session.
-  }
-}
-
-function getNoteLearningKey(noteIndex) {
-  return notes[noteIndex].label;
-}
-
-function getNoteStats(noteKey) {
-  if (!learningProfile.noteStats[noteKey]) {
-    learningProfile.noteStats[noteKey] = {
-      attempts: 0,
-      correct: 0,
-      misses: 0
-    };
-  }
-
-  return learningProfile.noteStats[noteKey];
-}
-
-function recordLearningAttempt(targetNoteIndex, guessedNoteIndex, wasCorrect) {
-  const targetNote = getNoteLearningKey(targetNoteIndex);
-  const targetStats = getNoteStats(targetNote);
-
-  targetStats.attempts += 1;
-  learningProfile.totalAttempts += 1;
-
-  if (wasCorrect) {
-    targetStats.correct += 1;
-    learningProfile.totalSolves += 1;
-  } else {
-    targetStats.misses += 1;
-
-    if (guessedNoteIndex !== null) {
-      const guessedNote = getNoteLearningKey(guessedNoteIndex);
-
-      if (guessedNote !== targetNote) {
-        const confusionKey = `${targetNote}->${guessedNote}`;
-        learningProfile.confusionStats[confusionKey] = (learningProfile.confusionStats[confusionKey] || 0) + 1;
-      }
-    }
-  }
-
-  saveLearningProfile();
-  updateLearningInsights();
-}
-
-function getStrongestNoteInsight() {
-  const strongNotes = Object.entries(learningProfile.noteStats)
-    .map(([note, stats]) => ({
-      note,
-      attempts: stats.attempts,
-      accuracy: stats.attempts === 0 ? 0 : stats.correct / stats.attempts
-    }))
-    .filter((item) => item.attempts >= 3 && item.accuracy >= 0.75)
-    .sort((a, b) => b.accuracy - a.accuracy || b.attempts - a.attempts);
-
-  if (strongNotes.length === 0) {
-    return learningProfile.totalAttempts >= 3
-      ? "Keep solving. Your strongest notes are still forming."
-      : "Solve a few notes to reveal your strengths.";
-  }
-
-  return `You have a good ear for ${strongNotes[0].note}.`;
-}
-
-function getFocusInsight() {
-  const commonConfusions = Object.entries(learningProfile.confusionStats)
-    .map(([pair, count]) => {
-      const [targetNote, guessedNote] = pair.split("->");
-
-      return { targetNote, guessedNote, count };
-    })
-    .filter((item) => item.count >= 2)
-    .sort((a, b) => b.count - a.count);
-
-  if (commonConfusions.length > 0) {
-    const topConfusion = commonConfusions[0];
-
-    return `You sometimes confuse ${topConfusion.targetNote} for ${topConfusion.guessedNote}.`;
-  }
-
-  const weakNotes = Object.entries(learningProfile.noteStats)
-    .map(([note, stats]) => ({
-      note,
-      attempts: stats.attempts,
-      misses: stats.misses,
-      missRate: stats.attempts === 0 ? 0 : stats.misses / stats.attempts
-    }))
-    .filter((item) => item.attempts >= 3 && item.missRate >= 0.45)
-    .sort((a, b) => b.missRate - a.missRate || b.misses - a.misses);
-
-  if (weakNotes.length > 0) {
-    return `${weakNotes[0].note} needs a little more attention.`;
-  }
-
-  return learningProfile.totalAttempts >= 4
-    ? "No clear weak spot yet. Keep collecting clues."
-    : "Misses will show which notes need attention.";
 }
 
 function updateLearningInsights() {
@@ -382,33 +196,6 @@ function describeMovement(step) {
   return `Go ${direction} ${distance}`;
 }
 
-function getAudioContext() {
-  if (!audioContext) {
-    audioContext = new AudioContext();
-  }
-
-  return audioContext;
-}
-
-function playFrequency(frequency) {
-  const context = getAudioContext();
-  const oscillator = context.createOscillator();
-  const volume = context.createGain();
-
-  oscillator.type = "sine";
-  oscillator.frequency.value = frequency;
-
-  volume.gain.setValueAtTime(0.0001, context.currentTime);
-  volume.gain.exponentialRampToValueAtTime(0.35, context.currentTime + 0.02);
-  volume.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.9);
-
-  oscillator.connect(volume);
-  volume.connect(context.destination);
-
-  oscillator.start();
-  oscillator.stop(context.currentTime + 0.95);
-}
-
 function chooseRandomMessage(messages) {
   return messages[Math.floor(Math.random() * messages.length)];
 }
@@ -491,6 +278,7 @@ function handleTimerExpired() {
   stopMovementTimer();
   recordMiss();
   recordLearningAttempt(mysteryNoteIndex, null, false);
+  updateLearningInsights();
   lastGuessIndex = null;
   showReplayTool();
   showFeedback("Time ran out. Try the movement again.", "hint");
@@ -910,6 +698,7 @@ function handleGuess(guessedNoteIndex) {
 
     recordCorrectAnswer();
     recordLearningAttempt(mysteryNoteIndex, guessedNoteIndex, true);
+    updateLearningInsights();
     stopMovementTimer();
     movementTimeLeft = advancedMovementTimeLimit;
 
@@ -952,6 +741,7 @@ function handleGuess(guessedNoteIndex) {
 
   recordMiss();
   recordLearningAttempt(mysteryNoteIndex, guessedNoteIndex, false);
+  updateLearningInsights();
   stopMovementTimer();
   movementTimeLeft = advancedMovementTimeLimit;
   lastGuessIndex = guessedNoteIndex;
