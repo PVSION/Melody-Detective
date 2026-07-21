@@ -21,60 +21,64 @@
           <h2>Start</h2>
         </div>
 
-        <div class="settings-grid" aria-label="Practice settings">
-          <div class="setting-group">
-            <p class="setting-label">Instrument</p>
-            <button class="setting-option selected" type="button" data-setting="instrument" data-value="piano" aria-pressed="true">
-              <span class="option-icon" aria-hidden="true">♪</span>
-              <span>Piano</span>
-            </button>
-          </div>
+        <div class="menu-workspace">
+          <div class="settings-grid" aria-label="Practice settings">
+            <div class="setting-group">
+              <p class="setting-label">Instrument</p>
+              <button class="setting-option selected" type="button" data-setting="instrument" data-value="piano" aria-pressed="true">
+                <span class="option-icon" aria-hidden="true">♪</span>
+                <span>Piano</span>
+              </button>
+            </div>
 
-          <div class="setting-group">
-            <p class="setting-label">Mode</p>
-            <div class="option-row">
-              <button class="setting-option selected" type="button" data-setting="mode" data-value="single-note" aria-pressed="true">
-                <span class="option-icon" aria-hidden="true">?</span>
-                <span>Find One Note</span>
-              </button>
-              <button class="setting-option" type="button" data-setting="mode" data-value="pitch-movement" aria-pressed="false">
-                <span class="option-icon" aria-hidden="true">↕</span>
-                <span>Pitch Movement</span>
-              </button>
+            <div class="setting-group">
+              <p class="setting-label">Mode</p>
+              <div class="option-row">
+                <button class="setting-option selected" type="button" data-setting="mode" data-value="single-note" aria-pressed="true">
+                  <span class="option-icon" aria-hidden="true">?</span>
+                  <span>Find One Note</span>
+                </button>
+                <button class="setting-option" type="button" data-setting="mode" data-value="pitch-movement" aria-pressed="false">
+                  <span class="option-icon" aria-hidden="true">↕</span>
+                  <span>Pitch Movement</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <p class="setting-label">Difficulty</p>
+              <div class="option-row">
+                <button class="setting-option selected" type="button" data-setting="difficulty" data-value="beginner" aria-pressed="true">
+                  <span class="option-icon" aria-hidden="true">1</span>
+                  <span>Beginner</span>
+                </button>
+                <button class="setting-option" type="button" data-setting="difficulty" data-value="intermediate" aria-pressed="false">
+                  <span class="option-icon" aria-hidden="true">2</span>
+                  <span>Intermediate</span>
+                </button>
+                <button class="setting-option" type="button" data-setting="difficulty" data-value="advanced" aria-pressed="false">
+                  <span class="option-icon" aria-hidden="true">3</span>
+                  <span>Advanced</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="setting-group">
-            <p class="setting-label">Difficulty</p>
-            <div class="option-row">
-              <button class="setting-option selected" type="button" data-setting="difficulty" data-value="beginner" aria-pressed="true">
-                <span class="option-icon" aria-hidden="true">1</span>
-                <span>Beginner</span>
-              </button>
-              <button class="setting-option" type="button" data-setting="difficulty" data-value="intermediate" aria-pressed="false">
-                <span class="option-icon" aria-hidden="true">2</span>
-                <span>Intermediate</span>
-              </button>
-              <button class="setting-option" type="button" data-setting="difficulty" data-value="advanced" aria-pressed="false">
-                <span class="option-icon" aria-hidden="true">3</span>
-                <span>Advanced</span>
-              </button>
+          <aside class="profile-card" aria-label="Overall ear profile">
+            <div class="profile-card-title">
+              <span>Ear Profile</span>
+              <strong>Long-term clues</strong>
             </div>
-          </div>
+            <div class="profile-card-clue">
+              <span>Strong Ear</span>
+              <strong id="profile-strength-insight">Solve a few notes to reveal your strengths.</strong>
+            </div>
+            <div class="profile-card-clue">
+              <span>Focus Clue</span>
+              <strong id="profile-focus-insight">Misses will show which notes need attention.</strong>
+            </div>
+          </aside>
         </div>
-
-        <div class="profile-card" aria-label="Overall ear profile">
-          <div class="profile-card-title">
-            <span>Ear Profile</span>
-            <strong>Long-term clues</strong>
-          </div>
-          <div class="profile-card-clue">
-            <span>Strong Ear</span>
-            <strong id="profile-strength-insight">Solve a few notes to reveal your strengths.</strong>
-          </div>
-          <div class="profile-card-clue">
-            <span>Focus Clue</span>
-            <strong id="profile-focus-insight">Misses will show which notes need attention.</strong>
           </div>
         </div>
 
